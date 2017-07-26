@@ -13,7 +13,8 @@ defmodule TougouBot.Mixfile do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    [mod: {TougouBot, []}]
+      [extra_applications: [:logger]]
+      [mod: {TougouBot, []}]
   end
 
   # Run "mix help deps" to learn about dependencies.
