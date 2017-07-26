@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup mix run --no-hault > log.txt 2>&1 &
+nohup mix run --no-halt > log.txt 2>&1 &
