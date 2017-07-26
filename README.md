@@ -1,7 +1,7 @@
 # TougouBot
 
 A basic bot written in elixir.  
-Using the [poison](https://github.com/devinus/poison), [httpoison](https://github.com/edgurgel/httpoison), [alchemy](https://github.com/cronokirby/alchemy), 
+Using the [poison](https://github.com/devinus/poison), [httpoison](https://github.com/edgurgel/httpoison), [alchemy](https://github.com/cronokirby/alchemy), and [floki](https://github.com/philss/floki) libraries.
 
 ## Running
 
