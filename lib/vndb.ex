@@ -18,6 +18,9 @@ defmodule TougouBot.VNDB do
     List.wrap(args)
   end
 
+  Cogs.def vndbrng do
+    Cogs.say random_vn
+  end
 
   def search(term) do
     HTTPoison.start
@@ -57,5 +60,18 @@ defmodule TougouBot.VNDB do
   end
   defp extract_indexed_result([_ | tail], count) do
     extract_indexed_result(tail, count-1)
+  end
+
+  def random_vn do
+    HTTPoison.start
+    case HTTPoison.get("https://vndb.org/v/rand") do
+      {:ok, %HTTPoison.Response{status_code: 307, body: _, headers: headers}} -> 
+        get_first_location_header(headers)
+      {:ok, %HTTPoison.Response{status_code: 404}} ->
+        "VNDB seems to be down, got 404."
+      {:error, %HTTPoison.Error{reason: e}} ->
+        IO.inspect(e)
+        "got a bad error, check log"
+    end
   end
 end

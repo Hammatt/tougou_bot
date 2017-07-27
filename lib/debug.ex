@@ -7,10 +7,16 @@ defmodule TougouBot.Debug do
 
   def uptime do
     {seconds, _} = :erlang.statistics(:wall_clock)
-    days = to_string(div(seconds, (24*60*60*1000)))
-    hours = to_string(div(seconds, (60*60*1000)))
-    minutes = to_string(div(seconds, 60*1000))
-    days<>"d, "<>hours<>"h, "<>minutes<>"m"
+    d = (24*60*60*1000)
+    days = div(seconds, d)
+    seconds = seconds - (days * d)
+    h = (60*60*1000)
+    hours = div(seconds, h)
+    seconds = seconds - (hours * h)
+    m = (60*1000)
+    minutes = div(seconds, m)
+    seconds = seconds - (minutes * m)
+    to_string(days)<>"d, "<>to_string(hours)<>"h, "<>to_string(minutes)<>"m"
   end
 
   Cogs.def status do
