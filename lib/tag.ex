@@ -6,32 +6,40 @@ defmodule TougouBot.Tag do
   """
   use Alchemy.Cogs
 
+  #pre-defined messages
+  @tag_already "えー、でも、この言葉もう知てる"
+
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
   Cogs.def newtag(tag, contents) do
     case all_tags[tag] do
       nil -> 
         write_new_tag(tag, contents)
-        Cogs.say tag<>" created."# todo add flavour text
+        Cogs.say "あ〜、"<>tag<>" は "<>contents<>"、なるほど"
       _ ->
-        Cogs.say "that tag already exists"#todo add flavour text
+        Cogs.say @tag_already
     end
   end
   Cogs.def newtag(tag) do
-    Cogs.say "Please provide something to remember"#todo add flavour text
+    case all_tags[tag] do
+      nil ->
+        Cogs.say tag<>"は何？"
+      _ ->
+        Cogs.say @tag_already
+    end
   end
 
   Cogs.def deletetag(tag) do
     case all_tags[tag] do
-      nil -> Cogs.say "Tag does not exist"#todo flavour text
+      nil -> Cogs.say tag<>"は何？"
       _ ->
       delete_tag(tag)
-      Cogs.say tag<>" deleted."# todo flavour text
+      Cogs.say "はいよ、"<>tag<>"が忘れった"
     end
   end
 
   Cogs.def tag(tag) do
-    Cogs.say tag_contents(tag, all_tags)#todo potential flavour text
+    Cogs.say tag_contents(tag, all_tags)
   end
 
   # The heavy lifting #
@@ -64,7 +72,7 @@ defmodule TougouBot.Tag do
 
   defp tag_contents(tag, tags) do
     case tags[tag] do
-      nil -> "tag doesn't exist"# todo flavour text
+      nil -> tag<>"は何？"
       contents -> contents
     end
   end
