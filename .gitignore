@@ -24,3 +24,6 @@ token
 
 #ignore log file
 log.txt
+
+#ignore tag data
+tags.data
