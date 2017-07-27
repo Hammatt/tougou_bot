@@ -98,6 +98,8 @@ defmodule TougouBot.Tag do
       {:ok, data} ->
         {_, tags} = Poison.decode(data)
         tags
+      {:error, _} -> #also no tags
+        %{}
     end
   end
 end
