@@ -11,7 +11,7 @@ defmodule TougouBot.Tag do
 
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
-  Cogs.def newtag(tag, contents) do
+  Cogs.def ntag(tag, contents) do
     case all_tags[tag] do
       nil -> 
         write_new_tag(tag, contents)
@@ -20,16 +20,16 @@ defmodule TougouBot.Tag do
         Cogs.say @tag_already
     end
   end
-  Cogs.def newtag(tag) do
+  Cogs.def ntag(tag) do
     case all_tags[tag] do
       nil ->
-        Cogs.say tag<>"は何？"
+        Cogs.say tag<>"は何？ (!ntag <word> <meaning>)"
       _ ->
         Cogs.say @tag_already
     end
   end
 
-  Cogs.def deletetag(tag) do
+  Cogs.def dtag(tag) do
     case all_tags[tag] do
       nil -> Cogs.say tag<>"は何？"
       _ ->
