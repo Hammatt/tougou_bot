@@ -22,8 +22,12 @@ defmodule TougouBot.Tag do
   end
 
   Cogs.def deletetag(tag) do
-    delete_tag(tag)
-    Cogs.say tag<>" deleted."# todo flavour text
+    case all_tags[tag] do
+      nil -> Cogs.say "Tag does not exist"#todo flavour text
+      _ ->
+      delete_tag(tag)
+      Cogs.say tag<>" deleted."# todo flavour text
+    end
   end
 
   Cogs.def tag(tag) do
