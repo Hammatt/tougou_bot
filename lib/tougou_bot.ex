@@ -15,5 +15,6 @@ defmodule TougouBot do
     use TougouBot.Debug
     use TougouBot.Jisho
     use TougouBot.VNDB
+    use TougouBot.Tag
   end
 end
