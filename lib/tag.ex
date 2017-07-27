@@ -15,7 +15,7 @@ defmodule TougouBot.Tag do
     case all_tags[tag] do
       nil -> 
         write_new_tag(tag, contents)
-        Cogs.say "あ〜、"<>tag<>" は "<>contents<>"、なるほど"
+        Cogs.say "あ〜、"<>tag<>" は "<>contents<>" 、なるほど"
       _ ->
         Cogs.say @tag_already
     end
