@@ -7,9 +7,6 @@ defmodule TougouBot.Debug do
 
   def uptime do
     {seconds, _} = :erlang.statistics(:wall_clock)
-
-    seconds = seconds + (60*60*1000)#DEBUG LINE
-
     d = (24*60*60*1000)
     days = div(seconds, d)
     seconds = seconds - (days * d)
