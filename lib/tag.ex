@@ -42,6 +42,20 @@ defmodule TougouBot.Tag do
     Cogs.say tag_contents(tag, all_tags)
   end
 
+  #output all tags
+  Cogs.def atags do
+    #turn our map into a list of key value pairs.
+    tags = Enum.map(all_tags, fn({k, v}) -> {k, v} end)
+    Cogs.say "```"<>tags_to_string(tags)<>"```"
+  end
+
+  defp tags_to_string([]) do
+    ""
+  end
+  defp tags_to_string([{tag, contents} | tail]) do
+    tag<>" は "<>contents<>"\n"<>tags_to_string(tail)
+  end
+
   # The heavy lifting #
 
   @tag_file "tags.data"
