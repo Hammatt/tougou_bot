@@ -11,6 +11,7 @@ defmodule TougouBot.Tag do
 
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
+  Cogs.set_parser(:ntag, &TougouBot.Tag.custom_parser/1)
   Cogs.def ntag(tag, contents) do
     case all_tags[tag] do
       nil -> 
@@ -19,6 +20,19 @@ defmodule TougouBot.Tag do
       _ ->
         Cogs.say @tag_already
     end
+  end
+  def rebuild_string([head | []]) do
+    head
+  end
+  def rebuild_string([head | tail]) do
+    head<>" "<>rebuild_string(tail)
+  end
+  def custom_parser(args) do #parser to make our tag system remember `phrases` not `words`
+    args = String.split(args)
+    arg0 = Enum.at(args, 0)
+    args = Enum.drop(args, 1)
+    args = rebuild_string(args)
+    List.wrap(arg0) ++ List.wrap(args)
   end
   Cogs.def ntag(tag) do
     case all_tags[tag] do
