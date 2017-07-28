@@ -7,7 +7,7 @@ defmodule TougouBot.Tag do
   use Alchemy.Cogs
 
   #pre-defined messages
-  @tag_already "えー、でも、この言葉もう知てる"
+  @tag_already "へー、でも、この言葉もう知ってる"
 
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
