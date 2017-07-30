@@ -30,7 +30,6 @@ defmodule TougouBot.Jisho do
   defp parse_results_to_string_data([head | _]) do
     pretty = "**Reading(s):**  \n\t"<>parse_results_to_string_japanese(head["japanese"])
     pretty = pretty<>"**Definition(s):** \n"<>parse_results_to_string_senses(head["senses"], 1)
-    #pretty = pretty<>parse_results_to_string_data(tail) only give the first result.
     pretty
   end
   defp parse_results_to_string_data([]) do

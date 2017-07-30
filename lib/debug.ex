@@ -31,7 +31,6 @@ defmodule TougouBot.Debug do
 
   Cogs.def help do
     cmds = Enum.map(Cogs.all_commands, fn ({k, _}) -> k end)
-    #Cogs.say "```"<>descriptions_from_cmds(cmds)<>"```"
     %Embed{ color: 0x8B4513, 
           fields: List.wrap(Enum.map(command_descriptions, 
                               fn({k, v}) -> %Embed.Field{name: "!"<>k, value: v} end)) }
