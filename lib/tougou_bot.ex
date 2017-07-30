@@ -5,7 +5,7 @@ defmodule TougouBot do
 
   def start(_type, _args) do
     {_, token} = File.read("token")
-    token = String.strip(token)
+    token = String.trim(token)
     run = Client.start(token)
     load_modules()
     run

@@ -17,7 +17,7 @@ defmodule TougouBot.Debug do
     seconds = seconds - (hours * h)
     m = (60*1000)
     minutes = div(seconds, m)
-    seconds = seconds - (minutes * m)
+    #seconds = seconds - (minutes * m)
     to_string(days)<>"d, "<>to_string(hours)<>"h, "<>to_string(minutes)<>"m"
   end
 
@@ -30,27 +30,13 @@ defmodule TougouBot.Debug do
   end
 
   Cogs.def help do
-    cmds = Enum.map(Cogs.all_commands, fn ({k, _}) -> k end)
     %Embed{ color: 0x8B4513, 
-          fields: List.wrap(Enum.map(command_descriptions, 
+          fields: List.wrap(Enum.map(command_descriptions(), 
                               fn({k, v}) -> %Embed.Field{name: "!"<>k, value: v} end)) }
     |> Embed.send
   end
 
-  defp descriptions_from_cmds([]) do
-    ""
-  end
-  defp descriptions_from_cmds([head | tail]) do
-    case command_descriptions[head] do
-      nil ->
-        "Developer forgot to describe "<>head<>",\n"<>descriptions_from_cmds(tail)
-      d ->
-        d<>"\n"<>descriptions_from_cmds(tail)
-    end
-  end
-
-  defp command_descriptions do
-    descriptions = 
+  defp command_descriptions() do
     %{
       "ping" => "Tougou-chan should reply with pong!",
       "status" => "Tougou-chan will tell you about her running version, "<>
