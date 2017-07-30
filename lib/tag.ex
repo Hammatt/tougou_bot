@@ -5,6 +5,8 @@ defmodule TougouBot.Tag do
   Since the bot won't stay up 24/7 we need to keep this stored as a file.
   """
   use Alchemy.Cogs
+  alias Alchemy.Embed
+  import Embed
 
   #pre-defined messages
   @tag_already "へー、でも、この言葉もう知ってる"
@@ -56,11 +58,13 @@ defmodule TougouBot.Tag do
     Cogs.say tag_contents(tag, all_tags)
   end
 
+
+  @tag_colour_embed %Embed{color: 0xFF4500}
   #output all tags
   Cogs.def atags do
-    #turn our map into a list of key value pairs.
-    tags = Enum.map(all_tags, fn({k, v}) -> {k, v} end)
-    Cogs.say "```"<>tags_to_string(tags)<>"```"
+    %Embed{ color: 0xFF4500, 
+          fields: List.wrap(Enum.map(all_tags, fn({k, v}) -> %Embed.Field{name: k, value: v} end)) }
+    |> Embed.send
   end
 
   defp tags_to_string([]) do

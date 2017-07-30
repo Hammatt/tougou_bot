@@ -1,8 +1,15 @@
 defmodule TougouBot.Jisho do
   use Alchemy.Cogs
+  alias Alchemy.Embed
+  import Embed
+
+  @jisho_colour_embed %Embed{color: 0x56D926}
 
   Cogs.def jisho(term) do
-    Cogs.say search(term)
+    #todo: rework here to have readings and details parse into separate fields.
+    @jisho_colour_embed
+    |> field("Jisho result for "<>term<>":", search(term))
+    |> Embed.send
   end
 
   def search(term) do
@@ -21,9 +28,8 @@ defmodule TougouBot.Jisho do
   #TODO: is there a way to make this parser more pretty?
   #only take the first jisho result
   defp parse_results_to_string_data([head | _]) do
-    pretty = "**Japanese:** "<>parse_results_to_string_japanese(head["japanese"])
-    pretty = pretty<>"**Details:** \n"<>parse_results_to_string_senses(head["senses"])
-    #pretty = pretty<>parse_results_to_string_data(tail) only give the first result.
+    pretty = "**Reading(s):**  \n\t"<>parse_results_to_string_japanese(head["japanese"])
+    pretty = pretty<>"**Definition(s):** \n"<>parse_results_to_string_senses(head["senses"], 1)
     pretty
   end
   defp parse_results_to_string_data([]) do
@@ -38,16 +44,16 @@ defmodule TougouBot.Jisho do
   defp parse_results_to_string_japanese([]) do
     "  \n"
   end
+  defp parse_results_to_string_eng([head | []]) do
+    "\t"<>head<>"\n"
+  end
   defp parse_results_to_string_eng([head | tail]) do
-    "\t"<>head<>"\n"<>parse_results_to_string_eng(tail)
+    "\t"<>head<>", "<>parse_results_to_string_eng(tail)
   end
-  defp parse_results_to_string_eng([]) do
-    "  \n"
+  defp parse_results_to_string_senses([head | tail], index) do
+    "**"<>to_string(index)<>":**"<>parse_results_to_string_eng(head["english_definitions"])<>parse_results_to_string_senses(tail, index+1)
   end
-  defp parse_results_to_string_senses([head | tail]) do
-    parse_results_to_string_eng(head["english_definitions"])<>parse_results_to_string_senses(tail)
-  end
-  defp parse_results_to_string_senses([]) do
+  defp parse_results_to_string_senses([], index) do
     "  \n"
   end
 end

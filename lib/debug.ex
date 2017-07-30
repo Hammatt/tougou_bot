@@ -1,5 +1,7 @@
 defmodule TougouBot.Debug do
   use Alchemy.Cogs
+  alias Alchemy.Embed
+  import Embed
 
   Cogs.def ping do
     Cogs.say "pong!"
@@ -20,18 +22,19 @@ defmodule TougouBot.Debug do
   end
 
   Cogs.def status do
-    vsn = Mix.Project.config[:version]
-    memory = to_string(:erlang.memory()[:total] /1000000)
-    { { _, io_in }, { _, io_out } } = :erlang.statistics(:io)
-    io_in = to_string(io_in/1000000)
-    io_out = to_string(io_out/1000000)
-    Cogs.say("Tougou Version: "<>vsn<>" reporting in!\nUptime: "<>uptime()<>"\nMemory: "<>memory<>
-            "Mb\nIO in: "<>io_in<>"Mb\nIO out: "<>io_out<>"Mb")
+    %Embed { color: 0xFFB6C1 }
+    |> field("Version:", Mix.Project.config[:version])
+    |> field("Uptime:", uptime())
+    |> field("Memory use:", to_string(:erlang.memory()[:total] /1000000)<>"Mb")
+    |> Embed.send
   end
 
   Cogs.def help do
     cmds = Enum.map(Cogs.all_commands, fn ({k, _}) -> k end)
-    Cogs.say "```"<>descriptions_from_cmds(cmds)<>"```"
+    %Embed{ color: 0x8B4513, 
+          fields: List.wrap(Enum.map(command_descriptions, 
+                              fn({k, v}) -> %Embed.Field{name: "!"<>k, value: v} end)) }
+    |> Embed.send
   end
 
   defp descriptions_from_cmds([]) do
@@ -49,21 +52,21 @@ defmodule TougouBot.Debug do
   defp command_descriptions do
     descriptions = 
     %{
-      "ping" => "!ping: tougou-chan should reply with pong!",
-      "status" => "!status: tougou-chan will tell you about her running version, "<>
+      "ping" => "Tougou-chan should reply with pong!",
+      "status" => "Tougou-chan will tell you about her running version, "<>
                   "her uptime, and her memory/io stats.",
-      "jisho" => "!jisho <word>: tougou-chan will check jisho for the first word "<>
-                  "you give her and tell you its reading/meaning.",
-      "vndb" => "!vndb <term>: tougou-chan will give you the most popular vn "<>
+      "jisho" => "Takes one `word` as an argument. Tougou-chan will check jisho "<>
+                  "for the first word you give her and tell you its reading/meaning.",
+      "vndb" => "Takes one `term` as an argument. Tougou-chan will give you the most popular vn "<>
                 "that she can find using the term on vndb.",
-      "vndbrng" => "!vndbrng: tougou-chan will give you a random vn from vndb",
-      "tag" => "!tag <tag>: tougou-chan will attempt to recall the content "<>
-                "associated with the given tag",
-      "ntag" => "!ntag <tag> <content>: tougou-chan will learn and remember"<>
-                " a new tag->content pair.",
-      "dtag" => "!dtag <tag>: tougou-chan will forget the specified tag",
-      "atags" => "!atags: gives a list of all `tags` that tougou-chan knows",
-      "help" => "!help: gives a list of all commands and their descriptions"
+      "vndbrng" => "Tougou-chan will give you a random vn from vndb",
+      "tag" => "Takes one `tag` as an argument Tougou-chan will attempt to "<>
+                "recall the content associated with the given tag",
+      "ntag" => "Takes one `tag`, then one `content` as arguments. Tougou-chan "<>
+                "will learn and remember a new tag->content pair.",
+      "dtag" => "Takes one `tag` as an argument. Tougou-chan will forget the specified tag",
+      "atags" => "gives a list of all `tags` that Tougou-chan knows",
+      "help" => "gives a list of all commands and their descriptions"
     }
   end
 end
