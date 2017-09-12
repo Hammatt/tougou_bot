@@ -26,4 +26,4 @@ token
 log.txt
 
 #ignore tag data
-tags.data
+*tags.data
