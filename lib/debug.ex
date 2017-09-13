@@ -62,6 +62,9 @@ defmodule TougouBot.Debug do
   defp command_descriptions() do
     %{
       "ping" => "Tougou-chan should reply with pong!",
+      "roll" => "Takes nothing, a `limit`, or a `bound, and a `limit, as arguments."<>
+                "Tougou-chan will give you a random number between 0 and 100, "<>
+                "or between 0 and a `limit`, or between a `bound` and a `limit`.",
       "status" => "Tougou-chan will tell you about her running version, "<>
                   "her uptime, and her memory/io stats.",
       "jisho" => "Takes one `word` as an argument. Tougou-chan will check jisho "<>
