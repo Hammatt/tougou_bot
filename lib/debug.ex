@@ -7,6 +7,29 @@ defmodule TougouBot.Debug do
     Cogs.say "pong!"
   end
 
+  defp rng(bound, limit) do
+    case Integer.parse bound do
+      :error ->
+        "Lower bound not a number."#todo flavour text
+      {i, _} ->
+        case Integer.parse limit do
+          :error ->
+            "Upper limit not a number."#todo flavour text
+          {j, _} ->
+            (:rand.uniform(j-i))+i
+        end
+    end
+  end
+  Cogs.def roll do
+    Cogs.say rng "0", "100"
+  end
+  Cogs.def roll(limit) do
+    Cogs.say rng "0", limit
+  end
+  Cogs.def roll(bound, limit) do
+    Cogs.say rng bound, limit
+  end
+
   def uptime do
     {seconds, _} = :erlang.statistics(:wall_clock)
     d = (24*60*60*1000)
