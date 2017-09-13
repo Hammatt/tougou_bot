@@ -7,6 +7,29 @@ defmodule TougouBot.Debug do
     Cogs.say "pong!"
   end
 
+  defp rng(bound, limit) do
+    case Integer.parse bound do
+      :error ->
+        "Lower bound not a number."#todo flavour text
+      {i, _} ->
+        case Integer.parse limit do
+          :error ->
+            "Upper limit not a number."#todo flavour text
+          {j, _} ->
+            (:rand.uniform(j-i))+i
+        end
+    end
+  end
+  Cogs.def roll do
+    Cogs.say rng "0", "100"
+  end
+  Cogs.def roll(limit) do
+    Cogs.say rng "0", limit
+  end
+  Cogs.def roll(bound, limit) do
+    Cogs.say rng bound, limit
+  end
+
   def uptime do
     {seconds, _} = :erlang.statistics(:wall_clock)
     d = (24*60*60*1000)
@@ -17,7 +40,7 @@ defmodule TougouBot.Debug do
     seconds = seconds - (hours * h)
     m = (60*1000)
     minutes = div(seconds, m)
-    seconds = seconds - (minutes * m)
+    #seconds = seconds - (minutes * m)
     to_string(days)<>"d, "<>to_string(hours)<>"h, "<>to_string(minutes)<>"m"
   end
 
@@ -30,29 +53,18 @@ defmodule TougouBot.Debug do
   end
 
   Cogs.def help do
-    cmds = Enum.map(Cogs.all_commands, fn ({k, _}) -> k end)
     %Embed{ color: 0x8B4513, 
-          fields: List.wrap(Enum.map(command_descriptions, 
+          fields: List.wrap(Enum.map(command_descriptions(), 
                               fn({k, v}) -> %Embed.Field{name: "!"<>k, value: v} end)) }
     |> Embed.send
   end
 
-  defp descriptions_from_cmds([]) do
-    ""
-  end
-  defp descriptions_from_cmds([head | tail]) do
-    case command_descriptions[head] do
-      nil ->
-        "Developer forgot to describe "<>head<>",\n"<>descriptions_from_cmds(tail)
-      d ->
-        d<>"\n"<>descriptions_from_cmds(tail)
-    end
-  end
-
-  defp command_descriptions do
-    descriptions = 
+  defp command_descriptions() do
     %{
       "ping" => "Tougou-chan should reply with pong!",
+      "roll" => "Takes nothing, a `limit`, or a `bound, and a `limit, as arguments."<>
+                "Tougou-chan will give you a random number between 0 and 100, "<>
+                "or between 0 and a `limit`, or between a `bound` and a `limit`.",
       "status" => "Tougou-chan will tell you about her running version, "<>
                   "her uptime, and her memory/io stats.",
       "jisho" => "Takes one `word` as an argument. Tougou-chan will check jisho "<>

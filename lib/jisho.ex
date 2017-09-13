@@ -53,7 +53,7 @@ defmodule TougouBot.Jisho do
   defp parse_results_to_string_senses([head | tail], index) do
     "**"<>to_string(index)<>":**"<>parse_results_to_string_eng(head["english_definitions"])<>parse_results_to_string_senses(tail, index+1)
   end
-  defp parse_results_to_string_senses([], index) do
+  defp parse_results_to_string_senses([], _) do
     "  \n"
   end
 end
