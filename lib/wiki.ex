@@ -16,10 +16,14 @@ defmodule TougouBot.Wiki do
         data = Poison.decode!(body)
         articles = get_in(data, ["query"])
         |> get_in(["pages"])
-        |> Enum.find(fn {key, _value} ->
+        |> Enum.find(fn {key, value} ->#we need to modify this to find the index of 1
           case Integer.parse(key) do
             :error -> false
-            _ -> key
+            _ -> #Find the "index" of 1 for the result that should come out first.
+              case value["index"] do
+                1 -> key
+                _ -> false
+              end
           end
         end)
         {_, article} = articles
