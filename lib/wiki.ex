@@ -14,20 +14,25 @@ defmodule TougouBot.Wiki do
         "Searching for "<>term<>" returned 404."#todo flavour text
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         data = Poison.decode!(body)
-        articles = get_in(data, ["query"])
-        |> get_in(["pages"])
-        |> Enum.find(fn {key, value} ->#we need to modify this to find the index of 1
-          case Integer.parse(key) do
-            :error -> false
-            _ -> #Find the "index" of 1 for the result that should come out first.
-              case value["index"] do
-                1 -> key
-                _ -> false
+        case get_in(data, ["query"]) do
+          nil ->
+            "No results"#todo flavour text
+          _ ->
+            articles = get_in(data, ["query"])
+            |> get_in(["pages"])
+            |> Enum.find(fn {key, value} ->
+              case Integer.parse(key) do
+                :error -> false
+                _ -> #Find the "index" of 1 for the result that should come out first.
+                  case value["index"] do
+                    1 -> key
+                    _ -> false
+                  end
               end
-          end
-        end)
-        {_, article} = articles
-        Map.fetch!(article, "fullurl")
+            end)
+            {_, article} = articles
+            Map.fetch!(article, "fullurl")
+        end
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         "Something broke."#todo flavour text
