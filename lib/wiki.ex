@@ -11,12 +11,12 @@ defmodule TougouBot.Wiki do
     HTTPoison.start
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
-        "Searching for "<>term<>" returned 404."#todo flavour text
+        <>term<>"は404."
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         data = Poison.decode!(body)
         case get_in(data, ["query"]) do
           nil ->
-            "No results"#todo flavour text
+            "それは居ない"
           _ ->
             articles = get_in(data, ["query"])
             |> get_in(["pages"])
@@ -35,7 +35,7 @@ defmodule TougouBot.Wiki do
         end
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
-        "Something broke."#todo flavour text
+        "なにかが壊れた"
     end
   end
 end

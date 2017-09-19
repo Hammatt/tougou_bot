@@ -33,7 +33,7 @@ defmodule TougouBot.Jisho do
     pretty
   end
   defp parse_results_to_string_data([]) do
-    "Couldn't find any results"#TODO make line more tougouesque
+    "それは居ない"
   end
   defp parse_results_to_string_japanese([%{"word" => _, "reading" => _} = head | tail]) do
     head["word"]<>"("<>head["reading"]<>")  \n"<>parse_results_to_string_japanese(tail)

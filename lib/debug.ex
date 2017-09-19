@@ -10,11 +10,11 @@ defmodule TougouBot.Debug do
   defp rng(bound, limit) do
     case Integer.parse bound do
       :error ->
-        "Lower bound not a number."#todo flavour text
+        "下限は数字でなければなりません"
       {i, _} ->
         case Integer.parse limit do
           :error ->
-            "Upper limit not a number."#todo flavour text
+            "上限は数字でなければなりません"
           {j, _} ->
             (:rand.uniform(j-i))+i
         end
