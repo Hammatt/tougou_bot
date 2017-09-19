@@ -78,7 +78,9 @@ defmodule TougouBot.Debug do
                 "will learn and remember a new tag->content pair.",
       "dtag" => "Takes one `tag` as an argument. Tougou-chan will forget the specified tag",
       "atags" => "gives a list of all `tags` that Tougou-chan knows",
-      "help" => "gives a list of all commands and their descriptions"
+      "help" => "gives a list of all commands and their descriptions",
+      "wiki" => "Takes one `term` as an argument. Tougou-chan will search your term on wikipedia "<>
+                "and  give you the top result from as a link."
     }
   end
 end
