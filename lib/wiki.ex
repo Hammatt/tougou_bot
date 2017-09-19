@@ -11,7 +11,7 @@ defmodule TougouBot.Wiki do
     HTTPoison.start
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
-        <>term<>"は404."
+        term<>"は404."
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         data = Poison.decode!(body)
         case get_in(data, ["query"]) do
