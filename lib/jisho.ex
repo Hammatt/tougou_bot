@@ -26,9 +26,10 @@ defmodule TougouBot.Jisho do
             #only take the top result.
             {readings, senses} = List.first(results)
             readings_str = to_readings_str(readings)
-
+            definitions_str = to_definitions_str(1, senses)
             @jisho_colour_embed
             |> field("Reading(s):", readings_str)
+            |> field("Definition(s):", definitions_str)
             |> Embed.send
         end
       {:error, response} ->
@@ -64,6 +65,16 @@ defmodule TougouBot.Jisho do
       _ ->
         h["word"]<>"("<>h["reading"]<>")"
     end
+  end
+
+  defp to_definitions_str(_, []) do
+    ""#parts of speach and english definitions are lists. need to fix.
+  end
+  defp to_definitions_str(1, [h | t]) do
+    "1. "<>Enum.join(h["parts_of_speech"], ", ")<>": "<>Enum.join(h["english_definitions"], ", ")<>to_definitions_str(1+1, t)
+  end
+  defp to_definitions_str(i, [h | t]) do
+    "\n"<>Integer.to_string(i)<>". "<>Enum.join(h["english_definitions"], ", ")<>to_definitions_str(i+1, t)
   end
 
 end
