@@ -22,10 +22,13 @@ defmodule TougouBot.Jisho do
             results = Enum.map(response, fn(x) ->
               {x["japanese"], x["senses"]}
             end)
-            IO.inspect(results)
+
+            #only take the top result.
+            {readings, senses} = List.first(results)
+            readings_str = to_readings_str(readings)
 
             @jisho_colour_embed
-            |> field("Jisho result for", term)
+            |> field("Reading(s):", readings_str)
             |> Embed.send
         end
       {:error, response} ->
@@ -45,6 +48,21 @@ defmodule TougouBot.Jisho do
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         {:error, "HTTPoison Error."}
+    end
+  end
+
+  defp to_readings_str([h | []]) do
+    to_readings_str_helper(h)
+  end
+  defp to_readings_str([h | t]) do
+    to_readings_str_helper(h)<>", "<>to_readings_str(t)
+  end
+  defp to_readings_str_helper(h) do
+    case h["word"] do
+      nil ->
+        h["reading"]
+      _ ->
+        h["word"]<>"("<>h["reading"]<>")"
     end
   end
 
