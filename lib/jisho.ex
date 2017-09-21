@@ -4,56 +4,51 @@ defmodule TougouBot.Jisho do
   import Embed
 
   @jisho_colour_embed %Embed{color: 0x56D926}
+  @jisho_error_embed %Embed{color: 0xff0000}
 
   Cogs.def jisho(term) do
-    #todo: rework here to have readings and details parse into separate fields.
-    @jisho_colour_embed
-    |> field("Jisho result for "<>term<>":", search(term))
-    |> Embed.send
+    case search(term) do
+      {:ok, response} ->
+        #turn data into a list of maps, each map represents a different result.
+        response = get_in(response, ["data"])
+        IO.inspect(response)
+        case length(response) do
+          0 ->
+            @jisho_colour_embed
+            |> field("それは居ない", "馬鹿")
+            |> Embed.send
+          _ ->
+            #TODO: finish working out better way of parsing the results
+            # just need some way to extract the contents of each "japanese" key 
+            # and also each english_definitions key.
+            # need to think about what to do for wikipedia definitions, they seem 
+            # to be under the "links" key.
+            IO.inspect(parse_responses)
+
+            @jisho_colour_embed
+            |> field("Jisho result for", term)
+            #|> field("Jisho result for "<>term<>":", search(term))
+            #|> field("details", )
+            |> Embed.send
+        end
+      {:error, response} ->
+        @jisho_error_embed
+        |> field("エラーが発生しました", response)
+    end
   end
 
   def search(term) do
     HTTPoison.start
     case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>term) do
       {:ok, %HTTPoison.Response{status_code: 200, body: result, headers: _}} -> 
-        data = Poison.decode!(result)
-        parse_results_to_string_data(data["data"])
+        {:ok, Poison.decode!(result)}
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         IO.puts("jisho api 404")
+        {:error, 404}
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
+        {:error, "HTTPoison Error."}
     end
   end
 
-  #TODO: is there a way to make this parser more pretty?
-  #only take the first jisho result
-  defp parse_results_to_string_data([head | _]) do
-    pretty = "**Reading(s):**  \n\t"<>parse_results_to_string_japanese(head["japanese"])
-    pretty = pretty<>"**Definition(s):** \n"<>parse_results_to_string_senses(head["senses"], 1)
-    pretty
-  end
-  defp parse_results_to_string_data([]) do
-    "それは居ない"
-  end
-  defp parse_results_to_string_japanese([%{"word" => _, "reading" => _} = head | tail]) do
-    head["word"]<>"("<>head["reading"]<>")  \n"<>parse_results_to_string_japanese(tail)
-  end
-  defp parse_results_to_string_japanese([%{"reading" => _} = head | tail]) do
-    head["reading"]<>"  \n"<>parse_results_to_string_japanese(tail)
-  end
-  defp parse_results_to_string_japanese([]) do
-    "  \n"
-  end
-  defp parse_results_to_string_eng([head | []]) do
-    "\t"<>head<>"\n"
-  end
-  defp parse_results_to_string_eng([head | tail]) do
-    "\t"<>head<>", "<>parse_results_to_string_eng(tail)
-  end
-  defp parse_results_to_string_senses([head | tail], index) do
-    "**"<>to_string(index)<>":**"<>parse_results_to_string_eng(head["english_definitions"])<>parse_results_to_string_senses(tail, index+1)
-  end
-  defp parse_results_to_string_senses([], _) do
-    "  \n"
-  end
 end
