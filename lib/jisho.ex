@@ -11,28 +11,21 @@ defmodule TougouBot.Jisho do
       {:ok, response} ->
         #turn data into a list of maps, each map represents a different result.
         response = get_in(response, ["data"])
-        IO.inspect(response)#TODO debug line
         case length(response) do
           0 ->
             @jisho_colour_embed
             |> field("それは居ない", "馬鹿")
             |> Embed.send
           _ ->
-            #TODO: finish working out better way of parsing the results
-            # just need some way to extract the contents of each "japanese" key 
-            # and also each english_definitions key.
-            # need to think about what to do for wikipedia definitions, they seem 
-            # to be under the "links" key.
-            Enum.map(response, fn(x) ->
-              #one result
-              #need to turn this result into a heading (the first reading/word)
-              # and a list of definitions and possibly alternate readings/forms.
+            #strip away all the data we don't need and turn our results into a
+            # list of tuples of related data.
+            results = Enum.map(response, fn(x) ->
+              {x["japanese"], x["senses"]}
             end)
+            IO.inspect(results)
 
             @jisho_colour_embed
             |> field("Jisho result for", term)
-            #|> field("Jisho result for "<>term<>":", search(term))
-            #|> field("details", )
             |> Embed.send
         end
       {:error, response} ->
