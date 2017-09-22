@@ -20,7 +20,7 @@ defmodule TougouBot.VNDB do
   end
 
   Cogs.def vndbrng do
-    Cogs.say random_vn
+    Cogs.say(random_vn())
   end
 
   def search(term) do
@@ -32,7 +32,7 @@ defmodule TougouBot.VNDB do
         data = Floki.find(body, "table.stripe")
         data = Floki.find(extract_top_table(data), "td.tc1")
         data = Floki.find(data, "a")
-        data = extract_indexed_result(data, 2)
+        extract_indexed_result(data, 2)
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         IO.puts("VNDB search 404")
       {:error, %HTTPoison.Error{reason: e}} ->
@@ -40,7 +40,7 @@ defmodule TougouBot.VNDB do
     end
   end
 
-  defp get_first_location_header([{"Location", url} | tail]) do
+  defp get_first_location_header([{"Location", url} | _tail]) do
     url
   end
   defp get_first_location_header([_ | tail]) do

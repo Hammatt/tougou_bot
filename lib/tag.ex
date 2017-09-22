@@ -59,19 +59,11 @@ defmodule TougouBot.Tag do
   end
 
 
-  @tag_colour_embed %Embed{color: 0xFF4500}
   #output all tags
   Cogs.def atags do
     %Embed{ color: 0xFF4500, 
           fields: List.wrap(Enum.map(all_tags(message.channel_id), fn({k, v}) -> %Embed.Field{name: k, value: v} end)) }
     |> Embed.send
-  end
-
-  defp tags_to_string([]) do
-    ""
-  end
-  defp tags_to_string([{tag, contents} | tail]) do
-    tag<>" は "<>contents<>"\n"<>tags_to_string(tail)#tag is contents
   end
 
   # The heavy lifting #
