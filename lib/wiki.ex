@@ -1,14 +1,17 @@
 defmodule TougouBot.Wiki do
+  @moduledoc """
+  This module uses the MediaWiki action API running on https://en.wikipedia.org/
+  """
   use Alchemy.Cogs
 
   Cogs.def wiki(term) do
     result = search(term)
-    Cogs.say result
+    Cogs.say(result)
   end
 
   Cogs.set_parser(:search, &TougouBot.Wiki.custom_parser/1)
   defp search(term) do
-    HTTPoison.start
+    HTTPoison.start()
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         term<>"は404."
@@ -25,8 +28,10 @@ defmodule TougouBot.Wiki do
                 :error -> false
                 _ -> #Find the "index" of 1 for the result that should come out first.
                   case value["index"] do
-                    1 -> key
-                    _ -> false
+                    1 -> 
+                      key
+                    _ ->
+                      false
                   end
               end
             end)

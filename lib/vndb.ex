@@ -1,10 +1,13 @@
 defmodule TougouBot.VNDB do
+  @moduledoc """
+  This module uses the https://vndb.org/ api to search for visual novels.
+  """
   use Alchemy.Cogs
 
   Cogs.set_parser(:vndb, &TougouBot.VNDB.custom_parser/1)
   Cogs.def vndb(term) do
     result = search(term)
-    Cogs.say result
+    Cogs.say(result)
   end
   #parser so that we search for not just the first word.
   def custom_parser(args) do
@@ -24,7 +27,7 @@ defmodule TougouBot.VNDB do
   end
 
   def search(term) do
-    HTTPoison.start
+    HTTPoison.start()
     case HTTPoison.get("https://vndb.org/v/all?sq="<>term<>";o=d;s=rating") do
       {:ok, %HTTPoison.Response{status_code: 307, body: _, headers: headers}} -> 
         get_first_location_header(headers)
@@ -64,7 +67,7 @@ defmodule TougouBot.VNDB do
   end
 
   def random_vn do
-    HTTPoison.start
+    HTTPoison.start()
     case HTTPoison.get("https://vndb.org/v/rand") do
       {:ok, %HTTPoison.Response{status_code: 307, body: _, headers: headers}} -> 
         get_first_location_header(headers)

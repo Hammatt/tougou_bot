@@ -1,4 +1,8 @@
 defmodule TougouBot.Jisho do
+  @moduledoc """
+  This module is reponsible for using the http://jisho.org/ to look up japanese 
+  words.
+  """
   use Alchemy.Cogs
   alias Alchemy.Embed
   import Embed
@@ -39,7 +43,7 @@ defmodule TougouBot.Jisho do
   end
 
   def search(term) do
-    HTTPoison.start
+    HTTPoison.start()
     case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>term) do
       {:ok, %HTTPoison.Response{status_code: 200, body: result, headers: _}} -> 
         {:ok, Poison.decode!(result)}

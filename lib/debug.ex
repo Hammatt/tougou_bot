@@ -1,10 +1,14 @@
 defmodule TougouBot.Debug do
+  @moduledoc """
+  The debug module hosts debug commands such as `ping` and `staus`.
+  It also can host small simple misc commands that don't fit anywhere else.
+  """
   use Alchemy.Cogs
   alias Alchemy.Embed
   import Embed
 
   Cogs.def ping do
-    Cogs.say "pong!"
+    Cogs.say("pong!")
   end
 
   #helper function for our roll command.
@@ -22,13 +26,13 @@ defmodule TougouBot.Debug do
     end
   end
   Cogs.def roll do
-    Cogs.say rng "0", "100"
+    Cogs.say(rng("0", "100"))
   end
   Cogs.def roll(limit) do
-    Cogs.say rng "0", limit
+    Cogs.say(rng("0", limit))
   end
   Cogs.def roll(bound, limit) do
-    Cogs.say rng bound, limit
+    Cogs.say(rng(bound, limit))
   end
 
   def uptime do
