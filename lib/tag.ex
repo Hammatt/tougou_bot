@@ -8,9 +8,6 @@ defmodule TougouBot.Tag do
   alias Alchemy.Embed
   import Embed
 
-  #pre-defined messages
-  @tag_already "へー、でも、この言葉もう知ってる"
-
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
   Cogs.set_parser(:ntag, &TougouBot.Tag.custom_parser/1)
@@ -18,10 +15,19 @@ defmodule TougouBot.Tag do
     case all_tags(message.channel_id)[tag] do
       nil -> 
         write_new_tag(tag, contents, message.channel_id)
-        Cogs.say "あ〜、"<>tag<>" は "<>contents<>" 、なるほど"
+        Cogs.say "あ〜、"<>tag<>" は "<>contents<>" 、なるほど"#tag is contents, i see.
       _ ->
-        Cogs.say @tag_already
+        Cogs.say "へー、でも、この言葉もう知ってる"#but i already know that
     end
+  end
+  
+  #parser to make our tag system remember `phrases` not `words`
+  def custom_parser(args) do
+    args = String.split(args)
+    arg0 = Enum.at(args, 0)
+    args = Enum.drop(args, 1)
+    args = rebuild_string(args)
+    List.wrap(arg0) ++ List.wrap(args)
   end
   def rebuild_string([head | []]) do
     head
@@ -29,28 +35,22 @@ defmodule TougouBot.Tag do
   def rebuild_string([head | tail]) do
     head<>" "<>rebuild_string(tail)
   end
-  def custom_parser(args) do #parser to make our tag system remember `phrases` not `words`
-    args = String.split(args)
-    arg0 = Enum.at(args, 0)
-    args = Enum.drop(args, 1)
-    args = rebuild_string(args)
-    List.wrap(arg0) ++ List.wrap(args)
-  end
+
   Cogs.def ntag(tag) do
     case all_tags(message.channel_id)[tag] do
       nil ->
-        Cogs.say tag<>"は何？ (!ntag <word> <meaning>)"
+        Cogs.say tag<>"は何？ (!ntag <word> <meaning>)"#what?
       _ ->
-        Cogs.say @tag_already
+        Cogs.say "へー、でも、この言葉もう知ってる"#but i already know that
     end
   end
 
   Cogs.def dtag(tag) do
     case all_tags(message.channel_id)[tag] do
-      nil -> Cogs.say tag<>"は何？"
+      nil -> Cogs.say tag<>"は何？"#what?
       _ ->
       delete_tag(tag, message.channel_id)
-      Cogs.say "はいよ、"<>tag<>"が忘れった"
+      Cogs.say "はいよ、"<>tag<>"が忘れった"#okay, tag forgotten.
     end
   end
 
@@ -71,7 +71,7 @@ defmodule TougouBot.Tag do
     ""
   end
   defp tags_to_string([{tag, contents} | tail]) do
-    tag<>" は "<>contents<>"\n"<>tags_to_string(tail)
+    tag<>" は "<>contents<>"\n"<>tags_to_string(tail)#tag is contents
   end
 
   # The heavy lifting #
@@ -105,7 +105,7 @@ defmodule TougouBot.Tag do
 
   defp tag_contents(tag, tags) do
     case tags[tag] do
-      nil -> tag<>"は何？"
+      nil -> tag<>"は何？"#what?
       contents -> contents
     end
   end

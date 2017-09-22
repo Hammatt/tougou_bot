@@ -52,6 +52,7 @@ defmodule TougouBot.Jisho do
     end
   end
 
+  #helper functions to turn the lists of readings and words into a formatted string.
   defp to_readings_str([h | []]) do
     to_readings_str_helper(h)
   end
@@ -67,8 +68,9 @@ defmodule TougouBot.Jisho do
     end
   end
 
+  #helper functions for turning the definition list into formatted text.
   defp to_definitions_str(_, []) do
-    ""#parts of speach and english definitions are lists. need to fix.
+    ""
   end
   defp to_definitions_str(1, [h | t]) do
     "1. "<>Enum.join(h["parts_of_speech"], ", ")<>": "<>Enum.join(h["english_definitions"], ", ")<>to_definitions_str(1+1, t)

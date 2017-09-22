@@ -6,16 +6,17 @@ defmodule TougouBot.VNDB do
     result = search(term)
     Cogs.say result
   end
+  #parser so that we search for not just the first word.
+  def custom_parser(args) do
+    args = String.split(args)
+    args = rebuild_string(args)
+    List.wrap(args)
+  end
   def rebuild_string([head | []]) do
     head
   end
   def rebuild_string([head | tail]) do
     head<>"+"<>rebuild_string(tail)
-  end
-  def custom_parser(args) do
-    args = String.split(args)
-    args = rebuild_string(args)
-    List.wrap(args)
   end
 
   Cogs.def vndbrng do
