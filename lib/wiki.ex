@@ -4,12 +4,12 @@ defmodule TougouBot.Wiki do
   """
   use Alchemy.Cogs
 
+  Cogs.set_parser(:wiki, &TougouBot.Util.Parsers.plus_parser/1)
   Cogs.def wiki(term) do
     result = search(term)
     Cogs.say(result)
   end
 
-  Cogs.set_parser(:search, &TougouBot.Util.Parsers.space_parser/1)
   defp search(term) do
     HTTPoison.start()
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
