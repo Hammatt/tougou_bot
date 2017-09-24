@@ -5,9 +5,14 @@ defmodule TougouBot.Anime do
   """
   use Alchemy.Cogs
 
-  Cogs.set_parser(:vndb, &TougouBot.VNDB.custom_parser/1)
-  Cogs.def mal(term) do
-    results = search(term)
+  Cogs.set_parser(:anime, &TougouBot.VNDB.custom_parser/1)
+  Cogs.def anime(term) do
+    results = search(term, "anime")
+    Cogs.say(results)
+  end
+  Cogs.set_parser(:manga, &TougouBot.VNDB.custom_parser/1)
+  Cogs.def manga(term) do
+    results = search(term, "manga")
     Cogs.say(results)
   end
   #parser so that we search for not just the first word.
@@ -24,9 +29,16 @@ defmodule TougouBot.Anime do
   end
 
   #todo: way to select anime or manga
-  defp search(term) do
+  defp search(term, type) do
+    {username, password} = File.read("mal")
+    case File.read("mal") do
+      {:ok, body} ->
+        [username, password] = String.split(body)
+      {:error, e} ->
+        IO.inspect(e)
+    end
     HTTPoison.start()
-    case HTTPoison.get("https://myanimelist.net/api/anime|manga/search.xml?q="<>term) do
+    case HTTPoison.get("https://"<>username<>":"<>password<>"@myanimelist.net/api/"<>type<>"/search.xml?q="<>term) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         IO.inspect(body)
         body
