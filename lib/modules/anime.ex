@@ -17,13 +17,14 @@ defmodule TougouBot.Modules.Anime do
   end
 
   defp search(term, type) do
-    {username, password} = File.read("mal")
-    case File.read("mal") do
-      {:ok, body} ->
-        [username, password] = String.split(body)
-      {:error, e} ->
-        IO.inspect(e)
-    end
+    [username, password] = 
+      case File.read("mal") do
+        {:ok, body} ->
+          String.split(body)
+        {:error, e} ->
+          IO.inspect(e)
+          ["", ""]
+      end 
     HTTPoison.start()
     case HTTPoison.get("https://"<>username<>":"<>password<>"@myanimelist.net/api/"<>type<>"/search.xml?q="<>term) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
@@ -33,7 +34,7 @@ defmodule TougouBot.Modules.Anime do
             |> List.first
             |> List.first
         "https://myanimelist.net/"<>type<>"/"<>id
-      {:ok, %HTTPoison.Response{status_code: 204, body: body}} ->
+      {:ok, %HTTPoison.Response{status_code: 204, body: _}} ->
         "それは居ない"#that doesn't exist
       {:ok, %HTTPoison.Response{status_code: 401}} ->
         "Invalid Credentials"#todo: flavour text
