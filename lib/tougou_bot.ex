@@ -17,5 +17,6 @@ defmodule TougouBot do
     use TougouBot.VNDB
     use TougouBot.Tag
     use TougouBot.Wiki
+    use TougouBot.Anime
   end
 end
