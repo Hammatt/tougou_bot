@@ -16,6 +16,7 @@ defmodule TougouBot.Anime do
     Cogs.say(results)
   end
   #parser so that we search for not just the first word.
+  #todo: separate all parsers out into a separate module to keep things more tidy.
   def custom_parser(args) do
     args = String.split(args)
     args = rebuild_string(args)
@@ -28,7 +29,6 @@ defmodule TougouBot.Anime do
     head<>"+"<>rebuild_string(tail)
   end
 
-  #todo: way to select anime or manga
   defp search(term, type) do
     {username, password} = File.read("mal")
     case File.read("mal") do
@@ -40,10 +40,14 @@ defmodule TougouBot.Anime do
     HTTPoison.start()
     case HTTPoison.get("https://"<>username<>":"<>password<>"@myanimelist.net/api/"<>type<>"/search.xml?q="<>term) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.inspect(body)
-        body
+        id = Floki.find(body, "entry")
+            |> Floki.find("id")
+            |> Enum.map(fn ({_, _, v}) -> v end)
+            |> List.first
+            |> List.first
+        "https://myanimelist.net/"<>type<>"/"<>id
       {:ok, %HTTPoison.Response{status_code: 204, body: body}} ->
-        "No results"#todo: flavour text
+        "それは居ない"#that doesn't exist
       {:ok, %HTTPoison.Response{status_code: 401}} ->
         "Invalid Credentials"#todo: flavour text
       {:error, %HTTPoison.Error{reason: e}} ->
