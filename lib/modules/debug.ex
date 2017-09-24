@@ -87,7 +87,11 @@ defmodule TougouBot.Modules.Debug do
       "atags" => "gives a list of all `tags` that Tougou-chan knows",
       "help" => "gives a list of all commands and their descriptions",
       "wiki" => "Takes one `term` as an argument. Tougou-chan will search your term on wikipedia "<>
-                "and  give you the top result from as a link."
+                "and  give you the top result from as a link.",
+      "anime" => "Takes a `term` as an argument. Tougou-chan will search myanimelist.net for an "<>
+                 "anime matching that term.",
+      "manga" => "Takes a `term` as an argument. Tougou-chan will search myanimelist.net for a "<>
+                 "manga matching that term."
     }
   end
 end
