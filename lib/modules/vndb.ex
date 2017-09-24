@@ -1,4 +1,4 @@
-defmodule TougouBot.VNDB do
+defmodule TougouBot.Modules.VNDB do
   @moduledoc """
   This module uses the https://vndb.org/ api to search for visual novels.
   """

@@ -1,4 +1,4 @@
-defmodule TougouBot.Anime do
+defmodule TougouBot.Modules.Anime do
   @moduledoc """
   The Anime module is in charge of handling searches for anime by using the 
   myanimelist api (https://myanimelist.net/modules.php?go=api)

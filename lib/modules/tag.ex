@@ -1,4 +1,4 @@
-defmodule TougouBot.Tag do
+defmodule TougouBot.Modules.Tag do
   @moduledoc """
   A `tag` is a simple mapping from a word to some contents.  
 

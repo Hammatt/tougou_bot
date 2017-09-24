@@ -1,4 +1,4 @@
-defmodule TougouBot.Wiki do
+defmodule TougouBot.Modules.Wiki do
   @moduledoc """
   This module uses the MediaWiki action API running on https://en.wikipedia.org/
   """

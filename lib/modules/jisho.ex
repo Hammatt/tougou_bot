@@ -1,4 +1,4 @@
-defmodule TougouBot.Jisho do
+defmodule TougouBot.Modules.Jisho do
   @moduledoc """
   This module is reponsible for using the http://jisho.org/ to look up japanese 
   words.

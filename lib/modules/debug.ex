@@ -1,4 +1,4 @@
-defmodule TougouBot.Debug do
+defmodule TougouBot.Modules.Debug do
   @moduledoc """
   The debug module hosts debug commands such as `ping` and `staus`.
   It also can host small simple misc commands that don't fit anywhere else.
