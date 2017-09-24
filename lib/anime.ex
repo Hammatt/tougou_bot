@@ -5,28 +5,15 @@ defmodule TougouBot.Anime do
   """
   use Alchemy.Cogs
 
-  Cogs.set_parser(:anime, &TougouBot.VNDB.custom_parser/1)
+  Cogs.set_parser(:anime, &TougouBot.Util.Parsers.plus_parser/1)
   Cogs.def anime(term) do
     results = search(term, "anime")
     Cogs.say(results)
   end
-  Cogs.set_parser(:manga, &TougouBot.VNDB.custom_parser/1)
+  Cogs.set_parser(:manga, &TougouBot.Util.Parsers.plus_parser/1)
   Cogs.def manga(term) do
     results = search(term, "manga")
     Cogs.say(results)
-  end
-  #parser so that we search for not just the first word.
-  #todo: separate all parsers out into a separate module to keep things more tidy.
-  def custom_parser(args) do
-    args = String.split(args)
-    args = rebuild_string(args)
-    List.wrap(args)
-  end
-  def rebuild_string([head | []]) do
-    head
-  end
-  def rebuild_string([head | tail]) do
-    head<>"+"<>rebuild_string(tail)
   end
 
   defp search(term, type) do

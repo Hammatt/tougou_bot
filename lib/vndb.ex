@@ -4,22 +4,10 @@ defmodule TougouBot.VNDB do
   """
   use Alchemy.Cogs
 
-  Cogs.set_parser(:vndb, &TougouBot.VNDB.custom_parser/1)
+  Cogs.set_parser(:vndb, &TougouBot.Util.Parsers.plus_parser/1)
   Cogs.def vndb(term) do
     result = search(term)
     Cogs.say(result)
-  end
-  #parser so that we search for not just the first word.
-  def custom_parser(args) do
-    args = String.split(args)
-    args = rebuild_string(args)
-    List.wrap(args)
-  end
-  def rebuild_string([head | []]) do
-    head
-  end
-  def rebuild_string([head | tail]) do
-    head<>"+"<>rebuild_string(tail)
   end
 
   Cogs.def vndbrng do

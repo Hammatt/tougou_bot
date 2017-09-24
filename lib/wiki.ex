@@ -9,7 +9,7 @@ defmodule TougouBot.Wiki do
     Cogs.say(result)
   end
 
-  Cogs.set_parser(:search, &TougouBot.Wiki.custom_parser/1)
+  Cogs.set_parser(:search, &TougouBot.Util.Parsers.space_parser/1)
   defp search(term) do
     HTTPoison.start()
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
@@ -42,17 +42,5 @@ defmodule TougouBot.Wiki do
         IO.inspect(e)
         "なにかが壊れた"#that doesn't exist
     end
-  end
-  #parser so that we search for not just the first word.
-  def custom_parser(args) do
-    args = String.split(args)
-    args = rebuild_string(args)
-    List.wrap(args)
-  end
-  def rebuild_string([head | []]) do
-    head
-  end
-  def rebuild_string([head | tail]) do
-    head<>" "<>rebuild_string(tail)
   end
 end

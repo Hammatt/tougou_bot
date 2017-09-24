@@ -10,7 +10,7 @@ defmodule TougouBot.Tag do
 
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
-  Cogs.set_parser(:ntag, &TougouBot.Tag.custom_parser/1)
+  Cogs.set_parser(:ntag, &TougouBot.Util.Parsers.tags_parser/1)
   Cogs.def ntag(tag, contents) do
     case all_tags(message.channel_id)[tag] do
       nil -> 
@@ -19,21 +19,6 @@ defmodule TougouBot.Tag do
       _ ->
         Cogs.say("へー、でも、この言葉もう知ってる")#but i already know that
     end
-  end
-  
-  #parser to make our tag system remember `phrases` not `words`
-  def custom_parser(args) do
-    args = String.split(args)
-    arg0 = Enum.at(args, 0)
-    args = Enum.drop(args, 1)
-    args = rebuild_string(args)
-    List.wrap(arg0) ++ List.wrap(args)
-  end
-  def rebuild_string([head | []]) do
-    head
-  end
-  def rebuild_string([head | tail]) do
-    head<>" "<>rebuild_string(tail)
   end
 
   Cogs.def ntag(tag) do
