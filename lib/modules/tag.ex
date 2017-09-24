@@ -1,4 +1,4 @@
-defmodule TougouBot.Tag do
+defmodule TougouBot.Modules.Tag do
   @moduledoc """
   A `tag` is a simple mapping from a word to some contents.  
 
@@ -8,70 +8,49 @@ defmodule TougouBot.Tag do
   alias Alchemy.Embed
   import Embed
 
-  #pre-defined messages
-  @tag_already "へー、でも、この言葉もう知ってる"
-
   #at the moment, this will only remember one "word", 
   # anything after whitespace will be dropped
-  Cogs.set_parser(:ntag, &TougouBot.Tag.custom_parser/1)
+  Cogs.set_parser(:ntag, &TougouBot.Util.Parsers.tags_parser/1)
   Cogs.def ntag(tag, contents) do
     case all_tags(message.channel_id)[tag] do
       nil -> 
         write_new_tag(tag, contents, message.channel_id)
-        Cogs.say "あ〜、"<>tag<>" は "<>contents<>" 、なるほど"
+        Cogs.say("あ〜、"<>tag<>" は "<>contents<>" 、なるほど")#tag is contents, i see.
       _ ->
-        Cogs.say @tag_already
+        Cogs.say("へー、でも、この言葉もう知ってる")#but i already know that
     end
   end
-  def rebuild_string([head | []]) do
-    head
-  end
-  def rebuild_string([head | tail]) do
-    head<>" "<>rebuild_string(tail)
-  end
-  def custom_parser(args) do #parser to make our tag system remember `phrases` not `words`
-    args = String.split(args)
-    arg0 = Enum.at(args, 0)
-    args = Enum.drop(args, 1)
-    args = rebuild_string(args)
-    List.wrap(arg0) ++ List.wrap(args)
-  end
+
   Cogs.def ntag(tag) do
     case all_tags(message.channel_id)[tag] do
       nil ->
-        Cogs.say tag<>"は何？ (!ntag <word> <meaning>)"
+        Cogs.say(tag<>"は何？ (!ntag <word> <meaning>)")#what?
       _ ->
-        Cogs.say @tag_already
+        Cogs.say("へー、でも、この言葉もう知ってる")#but i already know that
     end
   end
 
   Cogs.def dtag(tag) do
     case all_tags(message.channel_id)[tag] do
-      nil -> Cogs.say tag<>"は何？"
+      nil -> Cogs.say(tag<>"は何？")#what?
       _ ->
       delete_tag(tag, message.channel_id)
-      Cogs.say "はいよ、"<>tag<>"が忘れった"
+      Cogs.say("はいよ、"<>tag<>"が忘れった")#okay, tag forgotten.
     end
   end
 
   Cogs.def tag(tag) do
-    Cogs.say tag_contents(tag, all_tags message.channel_id)
+    Cogs.say(tag_contents(tag, all_tags(message.channel_id)))
   end
 
 
-  @tag_colour_embed %Embed{color: 0xFF4500}
   #output all tags
   Cogs.def atags do
     %Embed{ color: 0xFF4500, 
-          fields: List.wrap(Enum.map(all_tags(message.channel_id), fn({k, v}) -> %Embed.Field{name: k, value: v} end)) }
+          fields: List.wrap(Enum.map(all_tags(message.channel_id), fn({k, v}) -> 
+            %Embed.Field{name: k, value: v}
+          end)) }
     |> Embed.send
-  end
-
-  defp tags_to_string([]) do
-    ""
-  end
-  defp tags_to_string([{tag, contents} | tail]) do
-    tag<>" は "<>contents<>"\n"<>tags_to_string(tail)
   end
 
   # The heavy lifting #
@@ -97,7 +76,7 @@ defmodule TougouBot.Tag do
 
   #get all of the tags as a map, remove the one, then write back.
   defp delete_tag(tag, channel_id) do
-    tags = all_tags channel_id
+    tags = all_tags(channel_id)
     tags = Map.drop(tags, [tag])
     {_, new_data} = Poison.encode(tags)
     File.write(get_tags_file(channel_id), new_data)
@@ -105,8 +84,10 @@ defmodule TougouBot.Tag do
 
   defp tag_contents(tag, tags) do
     case tags[tag] do
-      nil -> tag<>"は何？"
-      contents -> contents
+      nil ->
+        tag<>"は何？"#what?
+      contents ->
+        contents
     end
   end
 
@@ -127,7 +108,7 @@ defmodule TougouBot.Tag do
       {:ok, guild_id} ->
         guild_id<>@tag_file
       {:error, e} -> 
-        IO.puts e
+        IO.puts(e)
     end
   end
 end

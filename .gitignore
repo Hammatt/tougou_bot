@@ -27,3 +27,6 @@ log.txt
 
 #ignore tag data
 *tags.data
+
+#don't upload our mal api username and password
+mal

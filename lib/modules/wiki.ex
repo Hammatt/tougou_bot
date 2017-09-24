@@ -1,14 +1,17 @@
-defmodule TougouBot.Wiki do
+defmodule TougouBot.Modules.Wiki do
+  @moduledoc """
+  This module uses the MediaWiki action API running on https://en.wikipedia.org/
+  """
   use Alchemy.Cogs
 
+  Cogs.set_parser(:wiki, &TougouBot.Util.Parsers.plus_parser/1)
   Cogs.def wiki(term) do
     result = search(term)
-    Cogs.say result
+    Cogs.say(result)
   end
 
-
   defp search(term) do
-    HTTPoison.start
+    HTTPoison.start()
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         term<>"は404."
@@ -16,7 +19,7 @@ defmodule TougouBot.Wiki do
         data = Poison.decode!(body)
         case get_in(data, ["query"]) do
           nil ->
-            "それは居ない"
+            "それは居ない"#that doesnt exist
           _ ->
             articles = get_in(data, ["query"])
             |> get_in(["pages"])
@@ -25,8 +28,10 @@ defmodule TougouBot.Wiki do
                 :error -> false
                 _ -> #Find the "index" of 1 for the result that should come out first.
                   case value["index"] do
-                    1 -> key
-                    _ -> false
+                    1 -> 
+                      key
+                    _ ->
+                      false
                   end
               end
             end)
@@ -35,7 +40,7 @@ defmodule TougouBot.Wiki do
         end
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
-        "なにかが壊れた"
+        "なにかが壊れた"#that doesn't exist
     end
   end
 end

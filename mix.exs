@@ -4,7 +4,7 @@ defmodule TougouBot.Mixfile do
   def project do
     [
       app: :tougou_bot,
-      version: "0.2.8",
+      version: "0.3.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps()
@@ -22,7 +22,7 @@ defmodule TougouBot.Mixfile do
     [
       {:poison, "~> 3.1"},
       {:httpoison, "~> 0.10.0"},
-      {:alchemy, "~> 0.5.0", hex: :discord_alchemy},
+      {:alchemy, "~> 0.6.0", hex: :discord_alchemy},
       {:floki, "~> 0.17.0"}
     ]
   end

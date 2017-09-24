@@ -1,33 +1,38 @@
-defmodule TougouBot.Debug do
+defmodule TougouBot.Modules.Debug do
+  @moduledoc """
+  The debug module hosts debug commands such as `ping` and `staus`.
+  It also can host small simple misc commands that don't fit anywhere else.
+  """
   use Alchemy.Cogs
   alias Alchemy.Embed
   import Embed
 
   Cogs.def ping do
-    Cogs.say "pong!"
+    Cogs.say("pong!")
   end
 
+  #helper function for our roll command.
   defp rng(bound, limit) do
     case Integer.parse bound do
       :error ->
-        "下限は数字でなければなりません"
+        "下限は数字でなければなりません"#lower bound must be a number
       {i, _} ->
         case Integer.parse limit do
           :error ->
-            "上限は数字でなければなりません"
+            "上限は数字でなければなりません"#upper bound must be a number
           {j, _} ->
             (:rand.uniform(j-i))+i
         end
     end
   end
   Cogs.def roll do
-    Cogs.say rng "0", "100"
+    Cogs.say(rng("0", "100"))
   end
   Cogs.def roll(limit) do
-    Cogs.say rng "0", limit
+    Cogs.say(rng("0", limit))
   end
   Cogs.def roll(bound, limit) do
-    Cogs.say rng bound, limit
+    Cogs.say(rng(bound, limit))
   end
 
   def uptime do
@@ -59,6 +64,8 @@ defmodule TougouBot.Debug do
     |> Embed.send
   end
 
+  #returns a map of each command to a description of that command.
+  #must be MANUALLY updated each time a new command is added.
   defp command_descriptions() do
     %{
       "ping" => "Tougou-chan should reply with pong!",
@@ -80,7 +87,11 @@ defmodule TougouBot.Debug do
       "atags" => "gives a list of all `tags` that Tougou-chan knows",
       "help" => "gives a list of all commands and their descriptions",
       "wiki" => "Takes one `term` as an argument. Tougou-chan will search your term on wikipedia "<>
-                "and  give you the top result from as a link."
+                "and  give you the top result from as a link.",
+      "anime" => "Takes a `term` as an argument. Tougou-chan will search myanimelist.net for an "<>
+                 "anime matching that term.",
+      "manga" => "Takes a `term` as an argument. Tougou-chan will search myanimelist.net for a "<>
+                 "manga matching that term."
     }
   end
 end

@@ -12,10 +12,11 @@ defmodule TougouBot do
   end
 
   defp load_modules do
-    use TougouBot.Debug
-    use TougouBot.Jisho
-    use TougouBot.VNDB
-    use TougouBot.Tag
-    use TougouBot.Wiki
+    use TougouBot.Modules.Debug
+    use TougouBot.Modules.Jisho
+    use TougouBot.Modules.VNDB
+    use TougouBot.Modules.Tag
+    use TougouBot.Modules.Wiki
+    use TougouBot.Modules.Anime
   end
 end
