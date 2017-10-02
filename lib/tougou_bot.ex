@@ -18,5 +18,6 @@ defmodule TougouBot do
     use TougouBot.Modules.Tag
     use TougouBot.Modules.Wiki
     use TougouBot.Modules.Anime
+    use TougouBot.Modules.Danbooru
   end
 end
