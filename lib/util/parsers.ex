@@ -29,7 +29,10 @@ defmodule TougouBot.Util.Parsers do
   end
 
   #helper functions to re-build our list as a string with a given concatinator
-  def rebuild_string([head | []], concatenator) do
+  def rebuild_string([], _concatenator) do
+    ""
+  end
+  def rebuild_string([head | []], _concatenator) do
     head
   end
   def rebuild_string([head | tail], concatenator) do
