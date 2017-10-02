@@ -32,7 +32,7 @@ defmodule TougouBot.Util.Parsers do
   def rebuild_string([], _concatenator) do
     ""
   end
-  def rebuild_string([head | []], concatenator) do
+  def rebuild_string([head | []], _concatenator) do
     head
   end
   def rebuild_string([head | tail], concatenator) do
