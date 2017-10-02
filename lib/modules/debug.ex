@@ -91,7 +91,9 @@ defmodule TougouBot.Modules.Debug do
       "anime" => "Takes a `term` as an argument. Tougou-chan will search myanimelist.net for an "<>
                  "anime matching that term.",
       "manga" => "Takes a `term` as an argument. Tougou-chan will search myanimelist.net for a "<>
-                 "manga matching that term."
+                 "manga matching that term.",
+      "pic" => "Takes nothing, or a series of tags. Tougou-chan will give you a random image from"<>
+               " https://danbooru.donmai.us that fit the given tags."
     }
   end
 end

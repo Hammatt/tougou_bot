@@ -1,6 +1,7 @@
 defmodule TougouBot.Modules.Danbooru do
   @moduledoc """
-  TODO: moduledoc
+  The Danbooru module is in charge of the !pic commands which use the danbooru 
+  api to get a random image according to the tags given (or from all images if none given.)
   """
   use Alchemy.Cogs
   alias Alchemy.Embed
