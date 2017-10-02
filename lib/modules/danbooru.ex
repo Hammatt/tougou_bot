@@ -35,9 +35,15 @@ defmodule TougouBot.Modules.Danbooru do
             |> title("<"<>"https://danbooru.donmai.us/posts/"<>Integer.to_string(List.first(data)["id"])<>">")
             |> image("https://danbooru.donmai.us"<>List.first(data)["file_url"])
         end
+      {:ok, %HTTPoison.Response{status_code: 500}} ->
+        @danbooru_error_embed
+        |> title("何かが壊れちゃった…")
+        |> description("Danbooru has a 2 tag search limit.")
       {:error, e} ->
         IO.inspect(e);
-        "got a bad error, check log"#todo, flavour text.
+        @danbooru_error_embed
+        |> title("何かが壊れちゃった…")
+        |> description("got a bad error, check log")
     end
   end
 
