@@ -39,17 +39,23 @@ defmodule TougouBot.Modules.Jisho do
       {:error, response} ->
         @jisho_error_embed
         |> field("エラーが発生しました", response)
+        |> send
     end
   end
 
   def search(term) do
     HTTPoison.start()
-    case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>term) do
+    case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>URI.encode_www_form(term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: result, headers: _}} -> 
         {:ok, Poison.decode!(result)}
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         IO.puts("jisho api 404")
-        {:error, 404}
+        {:error, "HTTP 404"}
+      {:ok, %HTTPoison.Response{status_code: 400, body: result}} ->
+        IO.puts("Jisho think we're sending it malformed data, 400 error")
+        IO.inspect("http://jisho.org/api/v1/search/words?keyword="<>term)
+        IO.inspect(result)
+        {:error, "HTTP 400"}
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         {:error, "HTTPoison Error."}
