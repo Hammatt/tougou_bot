@@ -4,7 +4,7 @@ defmodule TougouBot.Mixfile do
   def project do
     [
       app: :tougou_bot,
-      version: "0.3.1",
+      version: "0.3.2",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps()

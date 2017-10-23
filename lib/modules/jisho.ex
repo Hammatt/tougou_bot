@@ -45,7 +45,7 @@ defmodule TougouBot.Modules.Jisho do
 
   def search(term) do
     HTTPoison.start()
-    case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>term) do
+    case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>URI.encode_www_form(term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: result, headers: _}} -> 
         {:ok, Poison.decode!(result)}
       {:ok, %HTTPoison.Response{status_code: 404}} ->
