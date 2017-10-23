@@ -39,6 +39,7 @@ defmodule TougouBot.Modules.Jisho do
       {:error, response} ->
         @jisho_error_embed
         |> field("エラーが発生しました", response)
+        |> send
     end
   end
 
@@ -49,7 +50,10 @@ defmodule TougouBot.Modules.Jisho do
         {:ok, Poison.decode!(result)}
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         IO.puts("jisho api 404")
-        {:error, 404}
+        {:error, "HTTP 404"}
+      {:ok, %HTTPoison.Response{status_code: 400}} ->
+        IO.puts("Jisho think we're sending it malformed data, 400 error")
+        {:error, "HTTP 400"}
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         {:error, "HTTPoison Error."}
