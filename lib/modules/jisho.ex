@@ -51,8 +51,10 @@ defmodule TougouBot.Modules.Jisho do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         IO.puts("jisho api 404")
         {:error, "HTTP 404"}
-      {:ok, %HTTPoison.Response{status_code: 400}} ->
+      {:ok, %HTTPoison.Response{status_code: 400, body: result}} ->
         IO.puts("Jisho think we're sending it malformed data, 400 error")
+        IO.inspect("http://jisho.org/api/v1/search/words?keyword="<>term)
+        IO.inspect(result)
         {:error, "HTTP 400"}
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
