@@ -24,8 +24,9 @@ defmodule TougouBot.Modules.VNDB do
         data = Floki.find(extract_top_table(data), "td.tc1")
         data = Floki.find(data, "a")
         extract_indexed_result(data, 2)
-      {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts("VNDB search 404")
+      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
+        IO.inspect(body)
+        "何かが壊れちゃった…: Encountered a "<>Integer.to_string(status)<>" error. Details logged."
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
     end

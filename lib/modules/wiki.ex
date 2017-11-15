@@ -13,8 +13,6 @@ defmodule TougouBot.Modules.Wiki do
   defp search(term) do
     HTTPoison.start()
     case HTTPoison.get("https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="<>term<>"&format=json&gsrprop=snippet&prop=info&inprop=url") do
-      {:ok, %HTTPoison.Response{status_code: 404}} ->
-        term<>"は404."
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         data = Poison.decode!(body)
         case get_in(data, ["query"]) do
@@ -38,6 +36,9 @@ defmodule TougouBot.Modules.Wiki do
             {_, article} = articles
             Map.fetch!(article, "fullurl")
         end
+      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
+        IO.inspect(body)
+        "何かが壊れちゃった…: Encountered a "<>Integer.to_string(status)<>" error. Details logged."
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         "なにかが壊れた"#that doesn't exist
