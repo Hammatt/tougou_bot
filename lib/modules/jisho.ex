@@ -56,6 +56,9 @@ defmodule TougouBot.Modules.Jisho do
         IO.inspect("http://jisho.org/api/v1/search/words?keyword="<>term)
         IO.inspect(result)
         {:error, "HTTP 400"}
+      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
+        IO.inspect(body)
+        {:error, "何かが壊れちゃった…: Encountered a "<>Integer.to_string(status)<>" error. Details logged."}
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         {:error, "HTTPoison Error."}

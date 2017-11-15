@@ -44,7 +44,7 @@ defmodule TougouBot.Modules.Danbooru do
         IO.inspect(body)
         @danbooru_error_embed
         |> title("何かが壊れちゃった…")
-        |> description("Encountered a "<>Integer.to_string(status)<>" error.")
+        |> description("Encountered a "<>Integer.to_string(status)<>" error. Details logged.")
       {:error, e} ->
         IO.inspect(e);
         @danbooru_error_embed
