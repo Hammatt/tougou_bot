@@ -48,16 +48,8 @@ defmodule TougouBot.Modules.Jisho do
     case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>URI.encode_www_form(term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: result, headers: _}} -> 
         {:ok, Poison.decode!(result)}
-      {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts("jisho api 404")
-        {:error, "HTTP 404"}
-      {:ok, %HTTPoison.Response{status_code: 400, body: result}} ->
-        IO.puts("Jisho think we're sending it malformed data, 400 error")
-        IO.inspect("http://jisho.org/api/v1/search/words?keyword="<>term)
-        IO.inspect(result)
-        {:error, "HTTP 400"}
-      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
-        IO.inspect(body)
+      {:ok, %HTTPoison.Response{status_code: status, body: body, headers: headers}} ->
+        TougouBot.Util.Error_Handler.handle_http_error(status, body, headers)
         {:error, "何かが壊れちゃった…: Encountered a "<>Integer.to_string(status)<>" error. Details logged."}
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
