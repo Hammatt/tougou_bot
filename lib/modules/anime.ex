@@ -36,11 +36,9 @@ defmodule TougouBot.Modules.Anime do
         "https://myanimelist.net/"<>type<>"/"<>id
       {:ok, %HTTPoison.Response{status_code: 204, body: _}} ->
         "それは居ない"#that doesn't exist
-      {:ok, %HTTPoison.Response{status_code: 401}} ->
-        "Invalid Credentials"#todo: flavour text
-      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
-        IO.inspect(body)
-        "何かが壊れちゃった…: Encountered a "<>Integer.to_string(status)<>" error. Details logged."
+      {:ok, %HTTPoison.Response{status_code: status, body: body, headers: headers}} ->
+        TougouBot.Util.Error_Handler.handle_http_error(status, body, headers)
+        "何かが壊れちゃった… Details logged."
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
         "got a bad error, check log"#todo, flavour text.

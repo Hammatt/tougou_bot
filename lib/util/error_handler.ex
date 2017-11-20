@@ -7,7 +7,7 @@ defmodule TougouBot.Util.Error_Handler do
 
   #Function to report an error into the console, in our live version we pipe 
   # all output into a log txt file so we just output like normal here and it'll all be logged.
-  def handle_http_error(status, headers, body) do
+  def handle_http_error(status, body, headers) do
     IO.puts("-----HTTP Error Report Start-----")
 
     IO.puts("HTTP Status: "<>status)

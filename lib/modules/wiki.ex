@@ -36,8 +36,8 @@ defmodule TougouBot.Modules.Wiki do
             {_, article} = articles
             Map.fetch!(article, "fullurl")
         end
-      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
-        IO.inspect(body)
+      {:ok, %HTTPoison.Response{status_code: status, body: body, headers: headers}} ->
+        TougouBot.Util.Error_Handler.handle_http_error(status, body, headers)
         "何かが壊れちゃった…: Encountered a "<>Integer.to_string(status)<>" error. Details logged."
       {:error, %HTTPoison.Error{reason: e}} ->
         IO.inspect(e)
