@@ -10,7 +10,7 @@ defmodule TougouBot.Util.Error_Handler do
   def handle_http_error(status, body, headers) do
     IO.puts("-----HTTP Error Report Start-----")
 
-    IO.puts("HTTP Status: "<>status)
+    IO.puts("HTTP Status: "<>Integer.to_string(status))
 
     IO.puts("---HTTP Headers Start---")
     IO.inspect(headers)
