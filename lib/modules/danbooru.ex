@@ -31,9 +31,10 @@ defmodule TougouBot.Modules.Danbooru do
             @danbooru_error_embed
             |> title("それは居ない")#that doesnt exist
           _ ->
+            IO.puts(List.first(data)["file_url"])
             @danbooru_colour_embed
             |> title("<"<>"https://danbooru.donmai.us/posts/"<>Integer.to_string(List.first(data)["id"])<>">")
-            |> image("https://danbooru.donmai.us"<>List.first(data)["file_url"])
+            |> image(List.first(data)["file_url"])
         end
       {:ok, %HTTPoison.Response{status_code: 500, body: body, headers: headers}} ->
         TougouBot.Util.Error_Handler.handle_http_error(500, body, headers)

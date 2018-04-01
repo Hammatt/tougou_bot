@@ -21,8 +21,8 @@ defmodule TougouBot.Mixfile do
   defp deps do
     [
       {:poison, "~> 3.1"},
-      {:httpoison, "~> 0.10.0"},
-      {:alchemy, "~> 0.6.0", hex: :discord_alchemy},
+      {:httpoison, "~> 0.13.0"},
+      {:alchemy, "~> 0.6.1", hex: :discord_alchemy},
       {:floki, "~> 0.17.0"}
     ]
   end
