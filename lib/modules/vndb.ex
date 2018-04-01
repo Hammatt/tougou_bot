@@ -18,7 +18,7 @@ defmodule TougouBot.Modules.VNDB do
     HTTPoison.start()
     case HTTPoison.get("https://vndb.org/v/all?sq="<>term<>";o=d;s=rating") do
       {:ok, %HTTPoison.Response{status_code: 307, body: _, headers: headers}} -> 
-        "https://vndb.org/v"<>get_first_location_header(headers)
+        "https://vndb.org"<>get_first_location_header(headers)
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> 
         data = Floki.find(body, "table.stripe")
         data = Floki.find(extract_top_table(data), "td.tc1")
