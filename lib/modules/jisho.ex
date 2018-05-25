@@ -1,6 +1,6 @@
 defmodule TougouBot.Modules.Jisho do
   @moduledoc """
-  This module is reponsible for using the http://jisho.org/ to look up japanese 
+  This module is reponsible for using the https://jisho.org/ to look up japanese 
   words.
   """
   use Alchemy.Cogs
@@ -45,7 +45,7 @@ defmodule TougouBot.Modules.Jisho do
 
   def search(term) do
     HTTPoison.start()
-    case HTTPoison.get("http://jisho.org/api/v1/search/words?keyword="<>URI.encode_www_form(term)) do
+    case HTTPoison.get("https://jisho.org/api/v1/search/words?keyword="<>URI.encode_www_form(term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: result, headers: _}} -> 
         {:ok, Poison.decode!(result)}
       {:ok, %HTTPoison.Response{status_code: status, body: body, headers: headers}} ->
