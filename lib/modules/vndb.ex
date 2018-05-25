@@ -59,7 +59,7 @@ defmodule TougouBot.Modules.VNDB do
     HTTPoison.start()
     case HTTPoison.get("https://vndb.org/v/rand") do
       {:ok, %HTTPoison.Response{status_code: 307, body: _, headers: headers}} -> 
-        get_first_location_header(headers)
+        "https://vndb.org"<>get_first_location_header(headers)
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         "VNDB seems to be down, got 404."
       {:error, %HTTPoison.Error{reason: e}} ->
