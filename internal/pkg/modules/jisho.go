@@ -6,7 +6,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func Jisho_command(s *discordgo.Session, m *discordgo.MessageCreate) {
+//JishoCommand : to be added as a handler by the discordgo library to handle the !jisho command
+func JishoCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	//ignore messages from self
 	if m.Author.ID == s.State.User.ID {
 		return

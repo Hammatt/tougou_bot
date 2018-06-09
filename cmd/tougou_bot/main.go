@@ -12,15 +12,15 @@ import (
 )
 
 var (
-	Token string
+	token string
 )
 
 func init() {
-	flag.StringVar(&Token, "t", "", "BotToken")
+	flag.StringVar(&token, "t", "", "BotToken")
 	flag.Parse()
 }
 
-func message_create(s *discordgo.Session, m *discordgo.MessageCreate) {
+func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	//ignore messages from self
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -33,15 +33,15 @@ func message_create(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func main() {
-	dg, err := discordgo.New("Bot " + Token)
+	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
 
-	dg.AddHandler(message_create)
+	dg.AddHandler(messageCreate)
 
-	dg.AddHandler(modules.Jisho_command)
+	dg.AddHandler(modules.JishoCommand)
 
 	err = dg.Open()
 	if err != nil {
