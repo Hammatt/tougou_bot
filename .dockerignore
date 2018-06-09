@@ -1,0 +1,2 @@
+#ignore build folder, we want to build the executable in the docker build process
+build/
