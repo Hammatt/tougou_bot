@@ -7,6 +7,7 @@ RUN gofmt -s -w .
 RUN go get -u golang.org/x/lint/golint
 RUN golint ./...
 RUN go get -u golang.org/x/vgo
+RUN vgo test ./...
 RUN vgo build -o build/tougou_bot  cmd/tougou_bot/main.go
 
 CMD ["build/tougou_bot"]

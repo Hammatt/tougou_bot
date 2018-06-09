@@ -1,10 +1,17 @@
 package modules
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
+
+func jishoAPISearch(s string) (string, error) {
+	//TODO everything
+
+	return "", errors.New("not yet implemented")
+}
 
 //JishoCommand : to be added as a handler by the discordgo library to handle the !jisho command
 func JishoCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
