@@ -1,16 +1,21 @@
 package jisho
 
 import (
-	"errors"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/hammatt/tougou_bot/internal/pkg/apicaller"
 )
 
 func jishoAPISearch(s string) (string, error) {
-	//TODO everything
+	searchURI := "https://jisho.org/api/v1/search/words?keyword=\"" + s + "\""
 
-	return "", errors.New("not yet implemented")
+	result, err := apicaller.CallAPI(searchURI)
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }
 
 //CommandHandler : to be added as a handler by the discordgo library to handle the !jisho command

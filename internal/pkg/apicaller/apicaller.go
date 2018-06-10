@@ -2,8 +2,10 @@ package apicaller
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 /*CallAPI :
@@ -13,6 +15,7 @@ import (
  *  response and/or an error
  */
 func CallAPI(s string) (string, error) {
+	fmt.Println("Query: " + s)
 	resp, err := http.Get(s)
 	if err != nil {
 		return "", err
@@ -20,7 +23,7 @@ func CallAPI(s string) (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("http status code, " + string(resp.StatusCode))
+		return "", errors.New("http status code, " + strconv.Itoa(resp.StatusCode))
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)

@@ -10,6 +10,8 @@ func TestJishoApi(t *testing.T) {
 
 	//Assert
 	if err != nil || jishoResult == "" {
+		t.Log("result: " + jishoResult)
+		t.Log("error: " + err.Error())
 		t.Fatal("Jisho result failure")
 	}
 }
