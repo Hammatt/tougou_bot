@@ -1,6 +1,7 @@
 package jisho
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -8,9 +9,9 @@ import (
 )
 
 func jishoAPISearch(s string) (string, error) {
-	searchURI := "https://jisho.org/api/v1/search/words?keyword=\"" + s + "\""
+	searchURL := "https://jisho.org/api/v1/search/words?keyword=\"" + url.QueryEscape(s) + "\""
 
-	result, err := apicaller.CallAPI(searchURI)
+	result, err := apicaller.CallAPI(searchURL)
 	if err != nil {
 		return "", err
 	}
