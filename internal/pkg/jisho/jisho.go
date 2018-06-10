@@ -13,8 +13,8 @@ func jishoAPISearch(s string) (string, error) {
 	return "", errors.New("not yet implemented")
 }
 
-//JishoCommand : to be added as a handler by the discordgo library to handle the !jisho command
-func JishoCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
+//CommandHandler : to be added as a handler by the discordgo library to handle the !jisho command
+func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	//ignore messages from self
 	if m.Author.ID == s.State.User.ID {
 		return

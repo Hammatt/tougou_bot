@@ -41,7 +41,7 @@ func main() {
 
 	dg.AddHandler(messageCreate)
 
-	dg.AddHandler(jisho.JishoCommand)
+	dg.AddHandler(jisho.CommandHandler)
 
 	err = dg.Open()
 	if err != nil {
