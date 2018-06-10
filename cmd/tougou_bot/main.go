@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/hammatt/tougou_bot/internal/pkg/modules"
+	"github.com/hammatt/tougou_bot/internal/pkg/jisho"
 )
 
 var (
@@ -41,7 +41,7 @@ func main() {
 
 	dg.AddHandler(messageCreate)
 
-	dg.AddHandler(modules.JishoCommand)
+	dg.AddHandler(jisho.JishoCommand)
 
 	err = dg.Open()
 	if err != nil {
