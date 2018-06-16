@@ -10,4 +10,4 @@ RUN go get -u golang.org/x/vgo
 RUN vgo test ./...
 RUN vgo build -o build/tougou_bot  cmd/tougou_bot/main.go
 
-CMD ["build/tougou_bot"]
+ENTRYPOINT ["build/tougou_bot"]
