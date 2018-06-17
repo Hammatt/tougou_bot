@@ -6,6 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/hammatt/tougou_bot/internal/pkg/apicaller"
+	"github.com/hammatt/tougou_bot/internal/pkg/commandsplitter"
 )
 
 func jishoAPISearch(s string) (string, error) {
@@ -28,5 +29,13 @@ func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if strings.HasPrefix(m.Content, "!jisho") {
 		s.ChannelMessageSend(m.ChannelID, "got jisho command")
+
+		splitCommand := commandsplitter.SplitCommand(m.Content)
+		jishoAPIResult, err := jishoAPISearch(splitCommand[1])
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "jisho search error: "+err.Error())
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, jishoAPIResult)
 	}
 }
