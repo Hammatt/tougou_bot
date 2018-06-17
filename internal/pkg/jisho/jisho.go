@@ -11,7 +11,7 @@ import (
 	"github.com/hammatt/tougou_bot/internal/pkg/util"
 )
 
-type JishoApiResult struct {
+type apiResult struct {
 	Meta struct {
 		Status int `json:"status"`
 	} `json:"meta"`
@@ -52,9 +52,9 @@ func jishoAPISearch(s string) (string, error) {
 	return result, nil
 }
 
-func parseJishoAPIJSONResultToStruct(apiResult string) JishoApiResult {
-	var result JishoApiResult
-	json.Unmarshal([]byte(apiResult), &result)
+func parseAPIJSONResultToStruct(jsonApiResult string) apiResult {
+	var result apiResult
+	json.Unmarshal([]byte(jsonApiResult), &result)
 	return result
 }
 
@@ -75,7 +75,7 @@ func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		//take the first result from the api.
-		jishoResult := parseJishoAPIJSONResultToStruct(jishoAPIResult).Data[0]
+		jishoResult := parseAPIJSONResultToStruct(jishoAPIResult).Data[0]
 
 		embed := util.NewEmbed().
 			AddField("Reading(s)", jishoResult.Japanese[0].Reading).
