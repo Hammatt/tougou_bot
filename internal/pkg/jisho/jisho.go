@@ -52,9 +52,9 @@ func jishoAPISearch(s string) (string, error) {
 	return result, nil
 }
 
-func parseAPIJSONResultToStruct(jsonApiResult string) apiResult {
+func parseAPIJSONResultToStruct(jsonAPIResult string) apiResult {
 	var result apiResult
-	json.Unmarshal([]byte(jsonApiResult), &result)
+	json.Unmarshal([]byte(jsonAPIResult), &result)
 	return result
 }
 
