@@ -76,7 +76,7 @@ func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		//take the first result from the api.
 		jishoResults := parseAPIJSONResultToStruct(jishoAPIResult)
 		if len(jishoResults.Data) < 1 {
-			s.ChannelMessageSend(m.ChannelID, "その言葉は辞書にない")
+			s.ChannelMessageSend(m.ChannelID, "その言葉は辞書に載ってない")
 			return
 		}
 
