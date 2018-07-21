@@ -9,7 +9,8 @@ There are a few things that I hope to achieve while doing this:
 3. Improve reliability.
 4. Switch to a docker based deployment strategy.
 5. Make it easier to build in move features.
-6. Improve doccumentation
+6. Improve doccumentation.
+7. Improve my use of the Japanese Language.
 
 Note: I know that I could achieve all of these things staying with Exlir, but I
  didn't wind up enjoying Elixir as much as originally thought. 

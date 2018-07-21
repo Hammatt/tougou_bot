@@ -66,21 +66,42 @@ func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if strings.HasPrefix(m.Content, "!jisho") {
-		s.ChannelMessageSend(m.ChannelID, "got jisho command")
 
 		splitCommand := commandsplitter.SplitCommand(m.Content)
 		jishoAPIResult, err := jishoAPISearch(splitCommand[1])
 		if err != nil {
-			s.ChannelMessageSend(m.ChannelID, "jisho search error: "+err.Error())
+			s.ChannelMessageSend(m.ChannelID, "辞書を調べて中、エラーが発生しました: "+err.Error())
 			return
 		}
 		//take the first result from the api.
-		jishoResult := parseAPIJSONResultToStruct(jishoAPIResult).Data[0]
+		jishoResults := parseAPIJSONResultToStruct(jishoAPIResult)
+		if len(jishoResults.Data) < 1 {
+			s.ChannelMessageSend(m.ChannelID, "その言葉は辞書にない")
+			return
+		}
 
+		//pick the top result
+		jishoResult := jishoResults.Data[0]
+		readings, sep := "", ""
+		for i := 0; i < len(jishoResult.Japanese); i++ {
+			if jishoResult.Japanese[i].Word != "" {
+				readings += sep + jishoResult.Japanese[i].Word
+				readings += "(" + jishoResult.Japanese[i].Reading + ")"
+			} else {
+				readings += sep + jishoResult.Japanese[i].Reading
+			}
+			sep = ", "
+		}
+		definitions := ""
+		sep = ""
+		for i := 0; i < len(jishoResult.Senses[0].EnglishDefinitions); i++ {
+			definitions += sep + jishoResult.Senses[0].EnglishDefinitions[i]
+			sep = ", "
+		}
 		embed := util.NewEmbed().
-			AddField("Reading(s)", jishoResult.Japanese[0].Reading).
-			AddField("Definition(s):", jishoResult.Senses[0].EnglishDefinitions[0]).
-			SetColor(0xff0000).MessageEmbed
+			AddField("Reading(s)", readings).
+			AddField("Definition(s):", definitions).
+			SetColor(0x56d926).MessageEmbed
 		s.ChannelMessageSendEmbed(m.ChannelID, embed)
 	}
 }
