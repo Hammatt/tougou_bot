@@ -95,14 +95,9 @@ func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if strings.HasPrefix(m.Content, "!pic") {
 		//build the query
-		query, sep := "", ""
-		args := commandsplitter.SplitCommand(m.Content)
-		for i := 1; i < len(args); i++ {
-			query += sep + args[i]
-			sep = "+"
-		}
+		_, args := commandsplitter.SplitCommand(m.Content)
 
-		danbooruAPIResult, err := danbooruAPISearch(query)
+		danbooruAPIResult, err := danbooruAPISearch(args)
 		if err != nil {
 			s.ChannelMessageSend(m.ChannelID, "TODO: danbooru error message: "+err.Error()) //TODO
 			return

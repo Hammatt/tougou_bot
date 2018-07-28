@@ -4,10 +4,9 @@ import (
 	"strings"
 )
 
-/*SplitCommand : takes a "command" string and splits it into an array of size 2 where the
- * 0th index is "just the command" and the 1st index is "the query"
+/*SplitCommand : takes a whole input string and returns the "command", and the "args"
  */
-func SplitCommand(stringToSplit string) [2]string {
+func SplitCommand(stringToSplit string) (string, string) {
 	var splitCommand [2]string
 
 	i := strings.Index(stringToSplit, " ")
@@ -19,5 +18,5 @@ func SplitCommand(stringToSplit string) [2]string {
 		splitCommand[0] = stringToSplit
 	}
 
-	return splitCommand
+	return splitCommand[0], splitCommand[1]
 }

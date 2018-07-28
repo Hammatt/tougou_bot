@@ -67,8 +67,8 @@ func CommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if strings.HasPrefix(m.Content, "!jisho") {
 
-		splitCommand := commandsplitter.SplitCommand(m.Content)
-		jishoAPIResult, err := jishoAPISearch(splitCommand[1])
+		_, args := commandsplitter.SplitCommand(m.Content)
+		jishoAPIResult, err := jishoAPISearch(args)
 		if err != nil {
 			s.ChannelMessageSend(m.ChannelID, "辞書を調べて中、エラーが発生しました: "+err.Error())
 			return
