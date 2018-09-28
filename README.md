@@ -1,61 +1,18 @@
-# TougouBot
+# Tougou\_Bot
 
-A basic bot written in elixir.  
-Using the [poison](https://github.com/devinus/poison), [httpoison](https://github.com/edgurgel/httpoison), [alchemy](https://github.com/cronokirby/alchemy), and [floki](https://github.com/philss/floki) libraries.
+A basic discord bot, re-written in GO.
 
-## Features
+This branch focuses on re-writing tougou in GO.  
+There are a few things that I hope to achieve while doing this:  
+1. Greatly increase the ammount of automated tests.
+2. Greatly improve code quality. (things like code re-use etc.)
+3. Improve reliability.
+4. Switch to a docker based deployment strategy.
+5. Make it easier to build in move features.
+6. Improve doccumentation.
+7. Improve my use of the Japanese Language.
 
-### Debug Module:
-
-Contains useful debug commands like `!ping` and `!status`. Also contains the `!roll` command which you can use to generate random numbers, see !help for more info.
-
-### Jisho Module:
-
-Accessable via the `!jisho` command, this module leverage the api provided by http://jisho.org 
-to quickly get definitions and readings of Japanese words.  
-e.g.: ![example usage](https://i.imgur.com/3yEoNuU.png)
-
-### Tag Module:
-
-Accessable via the `!tag` family of commands (check !help for more syntax info). Allows you to give the bot a piece of text-based information to recall.  
-e.g.: ![example usage](https://i.imgur.com/mVAyqfq.png)
-
-### VNDB Module:
-
-Warning: Lkely to be NSFW. Accessable via the `!vndb` family of commands (check !help for more info) Leverages https://vndb.org to search for Visual Novels and provides a link back.  
-e.g.: ![example usage](https://i.imgur.com/xoCoUHS.png)
-
-### Wiki Module:
-
-Accessable via the `!wiki` command. Leverages the API provided by https://en.wikipedia.org/wiki/Main_Page to serach for articles on wikipedia.  
-e.g.: ![example usage](https://i.imgur.com/lD0BRZO.png)
-
-### Anime Module:
-
-Accessable via the `!anime` and `!manga` commands. Leverages the API provided by https://myanimelist.net to search for anime or manga and provides links to their articles.  
-e.g.: ![example usage](https://i.imgur.com/RMTswbK.png)
-
-### Danbooru Module:
-
-Warning: Likely to be NSFW. Accessable via the `!pic` command (check !help for more info). Leverages the [Danbooru API](https://danbooru.donmai.us/wiki_pages/43568) (Site may be NSFW) to provide a random picture based on given serach tags.  
-e.g.: ![example usage](https://i.imgur.com/6u4rCae.png)
-
-
-## Running
-
-Before you run you need to make sure that you have a file in the root director of the project called "token" which contains your private discord application bot token.  
-You also will require a file called "mal" with the credentials for a [myanimelist.net](myanimelist.net) 
-account if you want to use the anime and manga commands.
-
-Make sure you have the dependancies with 
-```bash
-mix deps.get
-```
-then run the bot
-```bash
-## To start in production
-./kidou.sh
-
-## To start in debug/interactive mode
-iex -S mix
-```
+Note: I know that I could achieve all of these things staying with Exlir, but I
+ didn't wind up enjoying Elixir as much as originally thought. 
+I always enjoy learning new languages, it's one of my favorite things & I've been
+ looking for an excuse to learn GO for a while.
