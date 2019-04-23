@@ -5,3 +5,4 @@ authors = ["Alexander Hammatt <alexander.hammatt@protonmail.com>"]
 edition = "2018"
 
 [dependencies]
+serenity = "0.5"
