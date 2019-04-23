@@ -1,6 +1,6 @@
-mod serenity_discord_client;
+pub mod serenity_discord_client;
 
-trait DiscordClient {
+pub trait DiscordClient {
     fn new(token: &str) -> Self;
 
     fn register_command(command: &str) -> Result<(), &'static str>;
