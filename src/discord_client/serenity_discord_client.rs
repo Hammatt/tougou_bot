@@ -10,16 +10,13 @@ pub struct SerenityDiscordClient {
     serenity_client: Client,
 }
 
-struct SerenityDiscordHandler {
-    serenity_http: Box<Http>,
-}
+struct SerenityDiscordHandler;
 
 impl DiscordClient for SerenityDiscordClient {
     fn new(token: &str) -> Self {
         println!("valid token: {}", client::validate_token(token).is_ok());
-        let serenity_http = Box::new(Http::new_with_token(token));
-        let handler = SerenityDiscordHandler { serenity_http };
-        let mut serenity_client = Client::new(token, handler).expect("Error creating serenity client");
+        let serenity_http = Box::new(Http::default());
+        let mut serenity_client = Client::new(token, SerenityDiscordHandler).expect("Error creating serenity client");
         println!("created client");
         if let Err(why) = serenity_client.start() {
             println!("An error occurred while running the client: {:?}", why);
@@ -38,10 +35,10 @@ impl DiscordClient for SerenityDiscordClient {
 }
 
 impl EventHandler for SerenityDiscordHandler {
-    fn message(&self, _: Context, msg: Message) {
+    fn message(&self, ctx: Context, msg: Message) {
         println!("received message {}", msg.content);
         if msg.content == "!ping" {
-            if let Err(why) = msg.channel_id.say(&self.serenity_http, "Pong!") {
+            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!") {
                 println!("Error sending message: {:?}", why);
             }
         }
