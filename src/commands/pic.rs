@@ -61,15 +61,27 @@ mod tests {
     fn test_get_search_parameters() {
         let empty_vec: Vec<&str> = Vec::new();
         assert_eq!(empty_vec, get_search_parameters("pic"));
-        assert_eq!(vec!["tag1", "tag2", "tag3"], get_search_parameters("pic tag1 tag2 tag3"));
-        assert_eq!(vec!["一番", "に", "サン"], get_search_parameters("pic 一番 に サン"));
+        assert_eq!(
+            vec!["tag1", "tag2", "tag3"],
+            get_search_parameters("pic tag1 tag2 tag3")
+        );
+        assert_eq!(
+            vec!["一番", "に", "サン"],
+            get_search_parameters("pic 一番 に サン")
+        );
     }
 
     #[test]
     fn test_format_search_parameters() {
         let empty_vec: Vec<&str> = Vec::new();
         assert_eq!("", format_search_parameters(empty_vec));
-        assert_eq!("tag1+tag2+tag3", format_search_parameters(vec!["tag1", "tag2", "tag3"]));
-        assert_eq!("一番+に+サン", format_search_parameters(vec!["一番", "に", "サン"]));
+        assert_eq!(
+            "tag1+tag2+tag3",
+            format_search_parameters(vec!["tag1", "tag2", "tag3"])
+        );
+        assert_eq!(
+            "一番+に+サン",
+            format_search_parameters(vec!["一番", "に", "サン"])
+        );
     }
 }
