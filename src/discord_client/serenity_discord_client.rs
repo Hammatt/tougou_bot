@@ -6,9 +6,10 @@ use serenity::{
 };
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use std::thread;
 
 pub struct SerenityDiscordClient {
-    serenity_client: Client,
+    serenity_client: Arc<Mutex<Client>>,
     command_callbacks: Arc<Mutex<HashMap<String, Box<CommandHandler + Send>>>>,
 }
 
@@ -27,18 +28,20 @@ impl DiscordClient for SerenityDiscordClient {
             command_prefix: "!", //TODO: make this configurable in case of clashes with other bots
         };
 
-        let mut serenity_client =
-            Client::new(token, serenity_handler).expect("Error creating serenity client");
+        let serenity_client =
+            Arc::new(Mutex::new(Client::new(token, serenity_handler).expect("Error creating serenity client")));
         println!("created client");
 
-        //TODO: start in a new thread
-        if let Err(why) = serenity_client.start() {
-            println!("An error occurred while running the client: {:?}", why);
-        }
+        let thread_serenity_client = serenity_client.clone();
+        thread::spawn( move || {
+            if let Err(why) = thread_serenity_client.lock().unwrap().start() {
+                println!("An error occurred while running the client: {:?}", why);
+            }
+        });
         println!("started connection");
 
         SerenityDiscordClient {
-            serenity_client,
+            serenity_client: serenity_client.clone(),
             command_callbacks: command_callbacks.clone(),
         }
     }
