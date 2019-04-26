@@ -1282,7 +1282,7 @@ dependencies = [
 
 [[package]]
 name = "tougou_bot"
-version = "1.0.0"
+version = "1.0.0-dev"
 dependencies = [
  "serenity 0.5.11 (git+https://github.com/serenity-rs/serenity/?branch=v0.6.x)",
 ]

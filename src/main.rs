@@ -1,4 +1,5 @@
 use std::env;
+use tougou_bot::commands::status::StatusCommand;
 use tougou_bot::commands::ping::PingCommand;
 use tougou_bot::discord_client::*;
 
@@ -8,6 +9,7 @@ fn main() {
 
     let client = serenity_discord_client::SerenityDiscordClient::new(&token);
     client.register_command("ping", PingCommand).unwrap();
+    client.register_command("status", StatusCommand).unwrap();
 
     let mut temp = String::new();
     std::io::stdin()
