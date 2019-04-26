@@ -9,14 +9,15 @@ An (in progress) bot for discord. The old version of this had all the features t
  - commands to interface with the vndb.org website
  - commands to interface with some anime database (mal api still down?)
  - commands to interface with wikipedia (was this feature used?)
- - unit/feature tests
+ - unit/feature tests (need to stub out external APIs somehow)
 
 ## How to build it: 
 `cargo build [--release]`
 
 ## How to test it:
 Linting: `cargo fmt && cargo clippy`  
-automated tests still to come.
+Unit: `cargo test`  
+More detailed automated tests still to come.
 
 ## How to run it:
 Make sure the environment variable `DISCORD_TOKEN` is set to your discord application's bot token.  
