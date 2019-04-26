@@ -7,7 +7,7 @@ impl CommandHandler for PingCommand {
         &self,
         _command: &str,
         send_message_callback: &Fn(&str) -> (),
-    ) -> Result<(), &'static str> {
+    ) -> Result<(), Box<std::error::Error>> {
         send_message_callback("Pong!");
 
         Ok(())

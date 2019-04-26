@@ -46,7 +46,7 @@ impl DiscordClient for SerenityDiscordClient {
         }
     }
 
-    fn register_command<T>(&self, command: &str, command_handler: T) -> Result<(), &'static str>
+    fn register_command<T>(&self, command: &str, command_handler: T) -> Result<(), Box<std::error::Error>>
     where
         T: CommandHandler + Send + 'static,
     {

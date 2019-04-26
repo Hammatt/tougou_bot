@@ -15,7 +15,7 @@ impl CommandHandler for StatusCommand {
         &self,
         _command: &str,
         send_message_callback: &Fn(&str) -> (),
-    ) -> Result<(), &'static str> {
+    ) -> Result<(), Box<std::error::Error>> {
         send_message_callback(&self.status());
 
         Ok(())
