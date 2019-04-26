@@ -28,12 +28,13 @@ impl DiscordClient for SerenityDiscordClient {
             command_prefix: "!", //TODO: make this configurable in case of clashes with other bots
         };
 
-        let serenity_client =
-            Arc::new(Mutex::new(Client::new(token, serenity_handler).expect("Error creating serenity client")));
+        let serenity_client = Arc::new(Mutex::new(
+            Client::new(token, serenity_handler).expect("Error creating serenity client"),
+        ));
         println!("created client");
 
         let thread_serenity_client = serenity_client.clone();
-        thread::spawn( move || {
+        thread::spawn(move || {
             if let Err(why) = thread_serenity_client.lock().unwrap().start() {
                 println!("An error occurred while running the client: {:?}", why);
             }
@@ -46,7 +47,11 @@ impl DiscordClient for SerenityDiscordClient {
         }
     }
 
-    fn register_command<T>(&self, command: &str, command_handler: T) -> Result<(), Box<std::error::Error>>
+    fn register_command<T>(
+        &self,
+        command: &str,
+        command_handler: T,
+    ) -> Result<(), Box<std::error::Error>>
     where
         T: CommandHandler + Send + 'static,
     {

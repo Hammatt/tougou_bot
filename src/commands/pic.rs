@@ -18,11 +18,15 @@ impl CommandHandler for PicCommand {
         let parameters = get_search_parameters(command);
         let parameters = format_search_parameters(parameters);
 
-        let request_uri: String = format!("https://danbooru.donmai.us/posts.json?search&random=true&limit=1&tags={}", parameters);
+        let request_uri: String = format!(
+            "https://danbooru.donmai.us/posts.json?search&random=true&limit=1&tags={}",
+            parameters
+        );
         let response_body: String = reqwest::get(&request_uri)?.text()?;
-        
-        let response_model: Vec<DanbooruApiResponse> = serde_json::from_str(&response_body).unwrap();
-        
+
+        let response_model: Vec<DanbooruApiResponse> =
+            serde_json::from_str(&response_body).unwrap();
+
         let result = match response_model.first() {
             Some(picture) => &picture.file_url,
             None => "No images with those tags found",
