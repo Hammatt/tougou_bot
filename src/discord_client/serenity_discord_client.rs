@@ -68,29 +68,79 @@ impl DiscordClient for SerenityDiscordClient {
     }
 }
 
+impl SerenityDiscordHandler {
+    fn get_command_name(&self, full_command: &str) -> Option<String> {
+        let mut result: Option<String> = None;
+
+        if full_command.starts_with(self.command_prefix) {
+            if let Some(command_with_prefix) = full_command.split_whitespace().nth(0) {
+                if let Some(command) = command_with_prefix
+                    .chars()
+                    .next()
+                    .map(|c| &command_with_prefix[c.len_utf8()..])
+                {
+                    result = Some(command.to_string());
+                }
+            }
+        }
+
+        result
+    }
+}
+
 impl EventHandler for SerenityDiscordHandler {
     fn message(&self, ctx: Context, msg: Message) {
-        //TODO: clean this up and split it out into more functions?
-        if msg.content.starts_with(self.command_prefix) {
-            if let Some(command) = msg.content.split_whitespace().nth(0) {
-                if let Some(command) = command.chars().next().map(|c| &command[c.len_utf8()..]) {
-                    if let Some(command_handler) =
-                        self.command_callbacks.lock().unwrap().get(command)
-                    {
-                        if let Err(err) = command_handler.process_command(&msg.content, &|output| {
-                            if let Err(err) = msg.channel_id.say(&ctx.http, output) {
-                                println!("Error sending message: {:?}", err);
-                            }
-                        }) {
-                            println!("Error processing command: {:?}", err);
-                        }
-                    };
-                };
+        if let Some(command) = self.get_command_name(&msg.content) {
+            if let Some(command_handler) = self.command_callbacks.lock().unwrap().get(&command) {
+                if let Err(err) = command_handler.process_command(&msg.content, &|output| {
+                    if let Err(err) = msg.channel_id.say(&ctx.http, output) {
+                        println!("Error sending message: {:?}", err);
+                    }
+                }) {
+                    println!("Error processing command: {:?}", err);
+                }
             };
-        }
+        };
     }
 
     fn ready(&self, _: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_command_name() {
+        let command_callbacks = Arc::new(Mutex::new(HashMap::new()));
+
+        let handler = SerenityDiscordHandler {
+            command_callbacks: command_callbacks.clone(),
+            command_prefix: "!",
+        };
+
+        assert_eq!(
+            Some(String::from("ping")),
+            handler.get_command_name("!ping")
+        );
+        assert_eq!(Some(String::from("pic")), handler.get_command_name("!pic"));
+        assert_eq!(
+            Some(String::from("pic")),
+            handler.get_command_name("!pic tag1 tag2 tag3")
+        );
+        assert_eq!(
+            Some(String::from("pic")),
+            handler.get_command_name("!pic ももよ まじこい")
+        );
+        assert_eq!(
+            Some(String::from("辞書")),
+            handler.get_command_name("!辞書")
+        );
+        assert_eq!(
+            Some(String::from("辞書")),
+            handler.get_command_name("!辞書 勉強")
+        );
     }
 }
