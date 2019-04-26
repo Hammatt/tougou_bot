@@ -1,4 +1,5 @@
 use std::env;
+use std::sync::{ Condvar, Mutex };
 use tougou_bot::commands::{ pic::PicCommand, ping::PingCommand, status::StatusCommand };
 use tougou_bot::discord_client::*;
 
@@ -11,8 +12,7 @@ fn main() {
     client.register_command("ping", PingCommand).unwrap();
     client.register_command("status", StatusCommand).unwrap();
 
-    let mut temp = String::new();
-    std::io::stdin()
-        .read_line(&mut temp)
-        .expect("failed to read from console");
+    let keep_alive = Condvar::new();
+    let keep_alive_lock = Mutex::new(false);
+    let _ = keep_alive.wait(keep_alive_lock.lock().unwrap()).expect("keep alive lock failed");
 }
