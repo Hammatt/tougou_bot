@@ -72,7 +72,7 @@ impl EventHandler for SerenityDiscordHandler {
                     if let Some(command_handler) =
                         self.command_callbacks.lock().unwrap().get(command)
                     {
-                        if let Err(err) = command_handler.process_command(command, &|output| {
+                        if let Err(err) = command_handler.process_command(&msg.content, &|output| {
                             if let Err(err) = msg.channel_id.say(&ctx.http, output) {
                                 println!("Error sending message: {:?}", err);
                             }
