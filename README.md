@@ -11,6 +11,7 @@ An (in progress) bot for discord. The old version of this had all the features t
  - unit/feature tests (need to stub out external APIs somehow)
 
 ## How to build it: 
+[Make sure rustc & cargo are installed](https://www.rust-lang.org/learn/get-started)  
 `cargo build [--release]`
 
 ## How to test it:
