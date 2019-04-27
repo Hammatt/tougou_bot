@@ -3,7 +3,6 @@
 An (in progress) bot for discord. The old version of this had all the features that are still marked as todo so use an old release if you want those still.
 
 ## TODO:
- - basic ping command
  - commands to interface with the jihso.org website
  - commands to store and retrieve phrases
  - commands to interface with the vndb.org website
@@ -23,7 +22,10 @@ More detailed automated tests still to come.
 Make sure the environment variable `DISCORD_TOKEN` is set to your discord application's bot token.  
 Compile using `cargo build --release` and then run the output executable.
 
-## Features:  
+## Commands:  
+### !ping:  
+Tougou replies saying "Pong!"
+
 ### !pic: 
 (warning: likely to be NSFW)  
 This command fetches a random image from the danbooru site.   
