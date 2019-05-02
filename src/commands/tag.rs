@@ -2,16 +2,23 @@ use crate::discord_client::CommandHandler;
 use rusqlite::Connection;
 use rusqlite::NO_PARAMS;
 
-pub struct TagCommand {
-    tag_repository: TagRepository,
+trait TagRepository {
+    fn create_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>>;
+    fn read_tag(&self, tag_name: &str) -> Result<String, Box<std::error::Error>>;
+    fn update_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>>;
+    fn delete_tag(&self, tag_name: &str) -> Result<(), Box<std::error::Error>>;
 }
-pub struct TagRepository {
+
+pub struct TagCommand {
+    tag_repository: Box<TagRepository>,
+}
+pub struct SqliteTagRepository {
     db_connection: Connection,
 }
 
 impl TagCommand {
-    fn new() -> Result<Self, Box<std::error::Error>> {
-        let tag_repository = TagRepository::new()?;
+    fn new() -> Result<TagCommand, Box<std::error::Error>> {
+        let tag_repository = Box::new(SqliteTagRepository::new()?);
 
         Ok(TagCommand { tag_repository })
     }
@@ -24,17 +31,19 @@ impl CommandHandler for TagCommand {
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>> {
         if command.starts_with("ntag") {
-
+            
         } else if command.starts_with("atags") {
 
         } else {
 
         }
+
+        Ok(())
     }
 }
 
-impl TagRepository {
-    fn new() -> Result<TagRepository, Box<std::error::Error>> {
+impl SqliteTagRepository {
+    fn new() -> Result<SqliteTagRepository, Box<std::error::Error>> {
         let db_connection = Connection::open("tags.db")?;
 
         db_connection.execute(
@@ -46,9 +55,11 @@ impl TagRepository {
             NO_PARAMS,
         )?;
 
-        Ok(TagRepository { db_connection })
+        Ok(SqliteTagRepository { db_connection })
     }
+}
 
+impl TagRepository for SqliteTagRepository {
     fn create_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>> {
         self.db_connection.execute(
             "INSERT INTO tags
