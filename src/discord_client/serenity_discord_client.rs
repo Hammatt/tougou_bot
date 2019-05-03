@@ -8,13 +8,15 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+type BoxedThreadsafeCommandHandler = Box<Arc<Mutex<CommandHandler + Send>>>;
+
 pub struct SerenityDiscordClient {
     serenity_client: Arc<Mutex<Client>>,
-    command_callbacks: Arc<Mutex<HashMap<String, Box<Arc<Mutex<CommandHandler + Send>>>>>>,
+    command_callbacks: Arc<Mutex<HashMap<String, BoxedThreadsafeCommandHandler>>>,
 }
 
 struct SerenityDiscordHandler {
-    command_callbacks: Arc<Mutex<HashMap<String, Box<Arc<Mutex<CommandHandler + Send>>>>>>,
+    command_callbacks: Arc<Mutex<HashMap<String, BoxedThreadsafeCommandHandler>>>,
     command_prefix: &'static str,
 }
 

@@ -43,7 +43,7 @@ fn parse_ntag(command: &str) -> Option<Tag> {
 }
 
 fn parse_tag_command(command: &str) -> Option<&str> {
-    command.split_whitespace().skip(1).next()
+    command.split_whitespace().nth(1)
 }
 
 impl TagCommand {
