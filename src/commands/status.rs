@@ -14,6 +14,7 @@ impl CommandHandler for StatusCommand {
     fn process_command(
         &self,
         _command: &str,
+        _tennant_id: u64,
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>> {
         send_message_callback(&self.status());

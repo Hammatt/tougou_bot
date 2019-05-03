@@ -3,10 +3,13 @@ use rusqlite::Connection;
 use rusqlite::NO_PARAMS;
 
 trait TagRepository {
-    fn create_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>>;
-    fn read_tag(&self, tag_name: &str) -> Result<String, Box<std::error::Error>>;
-    fn update_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>>;
-    fn delete_tag(&self, tag_name: &str) -> Result<(), Box<std::error::Error>>;
+    fn create_tag(
+        &self,
+        tag_name: &str,
+        tag_body: &str,
+        tennant_id: u64,
+    ) -> Result<(), Box<std::error::Error>>;
+    fn read_tag(&self, tag_name: &str, tennant_id: u64) -> Result<String, Box<std::error::Error>>;
 }
 
 pub struct TagCommand {
@@ -58,13 +61,14 @@ impl CommandHandler for TagCommand {
     fn process_command(
         &self,
         command: &str,
+        tennant_id: u64,
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>> {
         if command.starts_with("!ntag") {
             match parse_ntag(command) {
                 Some(new_tag) => {
                     self.tag_repository
-                        .create_tag(&new_tag.name, &new_tag.body)?;
+                        .create_tag(&new_tag.name, &new_tag.body, tennant_id)?;
                     send_message_callback(&format!(
                         "Created new tag {} with body {}",
                         &new_tag.name, &new_tag.body
@@ -77,7 +81,7 @@ impl CommandHandler for TagCommand {
         } else {
             match parse_tag_command(command) {
                 Some(tag_name) => {
-                    let body = self.tag_repository.read_tag(tag_name)?;
+                    let body = self.tag_repository.read_tag(tag_name, tennant_id)?;
 
                     send_message_callback(&body);
                 }
@@ -96,8 +100,10 @@ impl SqliteTagRepository {
         db_connection.execute(
             "CREATE TABLE IF NOT EXISTS tags (
             id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL UNIQUE,
-            body TEXT NOT NULL
+            name TEXT NOT NULL,
+            body TEXT NOT NULL,
+            tennant_id INTEGER NOT NULL,
+            UNIQUE (name, tennant_id)
         )",
             NO_PARAMS,
         )?;
@@ -107,45 +113,33 @@ impl SqliteTagRepository {
 }
 
 impl TagRepository for SqliteTagRepository {
-    fn create_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>> {
+    fn create_tag(
+        &self,
+        tag_name: &str,
+        tag_body: &str,
+        tennant_id: u64,
+    ) -> Result<(), Box<std::error::Error>> {
+        //sqlite3 doesn't support u64 properly so we have to cast to i64 first. as long as we do this consistantly we shouldn't have problems.
+        let tennant_id = (tennant_id as i64).to_string();
         self.db_connection.execute(
             "INSERT INTO tags
-            (name, body) VALUES (?1, ?2)",
-            &[tag_name, tag_body],
+            (name, body, tennant_id) VALUES (?1, ?2, ?3)",
+            &[tag_name, tag_body, &tennant_id],
         )?;
         Ok(())
     }
 
-    fn read_tag(&self, tag_name: &str) -> Result<String, Box<std::error::Error>> {
+    fn read_tag(&self, tag_name: &str, tennant_id: u64) -> Result<String, Box<std::error::Error>> {
+        //sqlite3 doesn't support u64 properly so we have to cast to i64 first. as long as we do this consistantly we shouldn't have problems.
+        let tennant_id = (tennant_id as i64).to_string();
         Ok(self
             .db_connection
             .prepare(
                 "SELECT body
                 FROM tags 
-                WHERE name = (?1)",
+                WHERE tennant_id = (?1) AND name = (?2)",
             )?
-            .query_row(&[tag_name], |row| Ok(row.get(0)?))?)
-    }
-
-    fn update_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>> {
-        self.db_connection.execute(
-            "UPDATE tags
-                SET body = (?2)
-                WHERE name = (?1)",
-            &[tag_name, tag_body],
-        )?;
-
-        Ok(())
-    }
-
-    fn delete_tag(&self, tag_name: &str) -> Result<(), Box<std::error::Error>> {
-        self.db_connection.execute(
-            "DELETE FROM tags
-                WHERE name = (?1)",
-            &[tag_name],
-        )?;
-
-        Ok(())
+            .query_row(&[&tennant_id, tag_name], |row| Ok(row.get(0)?))?)
     }
 }
 

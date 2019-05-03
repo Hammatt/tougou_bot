@@ -6,6 +6,7 @@ impl CommandHandler for PingCommand {
     fn process_command(
         &self,
         _command: &str,
+        _tennant_id: u64,
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>> {
         send_message_callback("Pong!");
@@ -28,7 +29,7 @@ mod tests {
         let result = Arc::new(Mutex::new(Box::new(String::new())));
         let closure_result = result.clone();
         assert!(ping
-            .process_command("", &|message| *closure_result.lock().unwrap() =
+            .process_command("", 0, &|message| *closure_result.lock().unwrap() =
                 Box::new(String::from(message)))
             .is_ok());
 

@@ -13,6 +13,7 @@ impl CommandHandler for PicCommand {
     fn process_command(
         &self,
         command: &str,
+        _tennant_id: u64,
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>> {
         let parameters = get_search_parameters(command);

@@ -18,6 +18,7 @@ pub trait CommandHandler {
     fn process_command(
         &self,
         command: &str,
+        tennant_id: u64,
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>>;
 }
