@@ -25,7 +25,7 @@ impl CommandHandler for PicCommand {
         let response_body: String = reqwest::get(&request_uri)?.text()?;
 
         let response_model: Vec<DanbooruApiResponse> =
-            serde_json::from_str(&response_body).unwrap();
+            serde_json::from_str(&response_body)?;
 
         let result = match response_model.first() {
             Some(picture) => &picture.file_url,
