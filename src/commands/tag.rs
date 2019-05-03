@@ -80,7 +80,7 @@ impl CommandHandler for TagCommand {
                     let body = self.tag_repository.read_tag(tag_name)?;
 
                     send_message_callback(&body);
-                },
+                }
                 None => send_message_callback("Syntax error, could not find tag"),
             }
         }
