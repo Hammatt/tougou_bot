@@ -59,7 +59,7 @@ impl CommandHandler for TagCommand {
         if command.starts_with("ntag") {
             match parse_ntag(command) {
                 Some(new_tag) => {
-                    self.tag_repository.create_tag(&new_tag.name, &new_tag.body);
+                    self.tag_repository.create_tag(&new_tag.name, &new_tag.body)?;
                     send_message_callback(&format!(
                         "Created new tag {} with body {}",
                         &new_tag.name, &new_tag.body
