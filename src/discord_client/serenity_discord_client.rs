@@ -10,11 +10,11 @@ use std::thread;
 
 pub struct SerenityDiscordClient {
     serenity_client: Arc<Mutex<Client>>,
-    command_callbacks: Arc<Mutex<HashMap<String, Box<CommandHandler + Send>>>>,
+    command_callbacks: Arc<Mutex<HashMap<String, Box<Arc<Mutex<CommandHandler + Send>>>>>>,
 }
 
 struct SerenityDiscordHandler {
-    command_callbacks: Arc<Mutex<HashMap<String, Box<CommandHandler + Send>>>>,
+    command_callbacks: Arc<Mutex<HashMap<String, Box<Arc<Mutex<CommandHandler + Send>>>>>>,
     command_prefix: &'static str,
 }
 
@@ -50,7 +50,7 @@ impl DiscordClient for SerenityDiscordClient {
     fn register_command<T>(
         &self,
         command: &str,
-        command_handler: T,
+        command_handler: Arc<Mutex<T>>,
     ) -> Result<(), Box<std::error::Error>>
     where
         T: CommandHandler + Send + 'static,
@@ -92,7 +92,7 @@ impl EventHandler for SerenityDiscordHandler {
     fn message(&self, ctx: Context, msg: Message) {
         if let Some(command) = self.get_command_name(&msg.content) {
             if let Some(command_handler) = self.command_callbacks.lock().unwrap().get(&command) {
-                if let Err(err) = command_handler.process_command(&msg.content, &|output| {
+                if let Err(err) = command_handler.lock().unwrap().process_command(&msg.content, &|output| {
                     if let Err(err) = msg.channel_id.say(&ctx.http, output) {
                         println!("Error sending message: {:?}", err);
                     }

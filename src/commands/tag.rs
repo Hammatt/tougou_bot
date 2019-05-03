@@ -10,7 +10,7 @@ trait TagRepository {
 }
 
 pub struct TagCommand {
-    tag_repository: Box<TagRepository>,
+    tag_repository: Box<TagRepository + Send>,
 }
 pub struct SqliteTagRepository {
     db_connection: Connection,
@@ -42,8 +42,12 @@ fn parse_ntag(command: &str) -> Option<Tag> {
     result
 }
 
+fn parse_tag_command(command: &str) -> Option<&str> {
+    command.split_whitespace().skip(1).next()
+}
+
 impl TagCommand {
-    fn new() -> Result<TagCommand, Box<std::error::Error>> {
+    pub fn new() -> Result<TagCommand, Box<std::error::Error>> {
         let tag_repository = Box::new(SqliteTagRepository::new()?);
 
         Ok(TagCommand { tag_repository })
@@ -56,7 +60,7 @@ impl CommandHandler for TagCommand {
         command: &str,
         send_message_callback: &Fn(&str) -> (),
     ) -> Result<(), Box<std::error::Error>> {
-        if command.starts_with("ntag") {
+        if command.starts_with("!ntag") {
             match parse_ntag(command) {
                 Some(new_tag) => {
                     self.tag_repository
@@ -71,7 +75,14 @@ impl CommandHandler for TagCommand {
         } else if command.starts_with("atags") {
 
         } else {
+            match parse_tag_command(command) {
+                Some(tag_name) => {
+                    let body = self.tag_repository.read_tag(tag_name)?;
 
+                    send_message_callback(&body);
+                },
+                None => send_message_callback("Syntax error, could not find tag"),
+            }
         }
 
         Ok(())
@@ -99,7 +110,7 @@ impl TagRepository for SqliteTagRepository {
     fn create_tag(&self, tag_name: &str, tag_body: &str) -> Result<(), Box<std::error::Error>> {
         self.db_connection.execute(
             "INSERT INTO tags
-            (name, body) VALUES (?1, ?1)",
+            (name, body) VALUES (?1, ?2)",
             &[tag_name, tag_body],
         )?;
         Ok(())
