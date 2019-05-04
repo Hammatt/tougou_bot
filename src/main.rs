@@ -3,6 +3,7 @@ use std::sync::{Arc, Condvar, Mutex};
 use tougou_bot::commands::{
     pic::PicCommand, ping::PingCommand, status::StatusCommand, tag::TagCommand,
 };
+use tougou_bot::data_access::*;
 use tougou_bot::discord_client::*;
 
 fn main() {
@@ -20,7 +21,10 @@ fn main() {
         .register_command("status", Arc::new(Mutex::new(StatusCommand)))
         .unwrap();
 
-    let tag_command = Arc::new(Mutex::new(TagCommand::new().unwrap()));
+    let sqlite_tag_repository =
+        Box::new(tag_repository::sqlite_tag_repository::SqliteTagRepository::new().unwrap());
+
+    let tag_command = Arc::new(Mutex::new(TagCommand::new(sqlite_tag_repository).unwrap()));
     client
         .register_command("ntag", tag_command.clone())
         .unwrap();
