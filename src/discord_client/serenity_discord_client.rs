@@ -11,7 +11,6 @@ use std::thread;
 type BoxedThreadsafeCommandHandler = Box<Arc<Mutex<CommandHandler + Send>>>;
 
 pub struct SerenityDiscordClient {
-    serenity_client: Arc<Mutex<Client>>,
     command_callbacks: Arc<Mutex<HashMap<String, BoxedThreadsafeCommandHandler>>>,
 }
 
@@ -44,7 +43,6 @@ impl DiscordClient for SerenityDiscordClient {
         println!("started connection");
 
         SerenityDiscordClient {
-            serenity_client: serenity_client.clone(),
             command_callbacks: command_callbacks.clone(),
         }
     }
