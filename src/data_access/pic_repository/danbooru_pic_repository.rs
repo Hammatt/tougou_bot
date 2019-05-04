@@ -15,18 +15,18 @@ pub struct DanbooruPicRepositoryError {
     description: String,
 }
 
-fn format_search_parameters(parameters: &Vec<&str>) -> String {
+fn format_search_parameters(parameters: &[&str]) -> String {
     parameters.join("+")
 }
 
 impl DanbooruPicRepository {
-    pub fn new() -> DanbooruPicRepository {
+    pub fn default() -> DanbooruPicRepository {
         DanbooruPicRepository
     }
 }
 
 impl PicRepository for DanbooruPicRepository {
-    fn get_random_picture(&self, query: &Vec<&str>) -> Result<Pic, Box<std::error::Error>> {
+    fn get_random_picture(&self, query: &[&str]) -> Result<Pic, Box<std::error::Error>> {
         if query.len() > 2 {
             Err(Box::new(DanbooruPicRepositoryError::new(
                 "Too many args. danbooru supports up to 2 query parameters to be provided"

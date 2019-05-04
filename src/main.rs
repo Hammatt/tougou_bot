@@ -13,7 +13,7 @@ fn main() {
     let client = serenity_discord_client::SerenityDiscordClient::new(&token);
 
     let danbooru_pic_repository =
-        Box::new(pic_repository::danbooru_pic_repository::DanbooruPicRepository::new());
+        Box::new(pic_repository::danbooru_pic_repository::DanbooruPicRepository::default());
 
     let pic_command = Arc::new(Mutex::new(PicCommand::new(danbooru_pic_repository)));
     client.register_command("pic", pic_command).unwrap();
