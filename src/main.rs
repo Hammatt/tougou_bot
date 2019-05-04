@@ -11,12 +11,17 @@ fn main() {
         env::var("DISCORD_TOKEN").expect("Must set the environment variable `DISCORD_TOKEN`");
 
     let client = serenity_discord_client::SerenityDiscordClient::new(&token);
-    client
-        .register_command("pic", Arc::new(Mutex::new(PicCommand)))
-        .unwrap();
+
+    let danbooru_pic_repository =
+        Box::new(pic_repository::danbooru_pic_repository::DanbooruPicRepository::new());
+
+    let pic_command = Arc::new(Mutex::new(PicCommand::new(danbooru_pic_repository)));
+    client.register_command("pic", pic_command).unwrap();
+
     client
         .register_command("ping", Arc::new(Mutex::new(PingCommand)))
         .unwrap();
+
     client
         .register_command("status", Arc::new(Mutex::new(StatusCommand)))
         .unwrap();
