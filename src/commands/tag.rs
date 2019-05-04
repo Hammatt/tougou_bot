@@ -10,6 +10,7 @@ trait TagRepository {
         tennant_id: u64,
     ) -> Result<(), Box<std::error::Error>>;
     fn read_tag(&self, tag_name: &str, tennant_id: u64) -> Result<String, Box<std::error::Error>>;
+    fn read_all_tags(&self, tennant_id: u64) -> Result<Vec<Tag>, Box<std::error::Error>>;
 }
 
 pub struct TagCommand {
@@ -76,8 +77,22 @@ impl CommandHandler for TagCommand {
                 }
                 None => send_message_callback("Syntax error, could not create tag"),
             }
-        } else if command.starts_with("atags") {
+        } else if command.starts_with("!atags") {
+            let tags: Vec<Tag> = self.tag_repository.read_all_tags(tennant_id)?;
+            if tags.is_empty() {
+                send_message_callback("no tags created");
+            } else {
+                let mut message = String::new();
 
+                for tag in tags {
+                    message.push_str(&tag.name);
+                    message.push_str(": ");
+                    message.push_str(&tag.body);
+                    message.push('\n')
+                }
+
+                send_message_callback(&message);
+            }
         } else {
             match parse_tag_command(command) {
                 Some(tag_name) => {
@@ -121,6 +136,7 @@ impl TagRepository for SqliteTagRepository {
     ) -> Result<(), Box<std::error::Error>> {
         //sqlite3 doesn't support u64 properly so we have to cast to i64 first. as long as we do this consistantly we shouldn't have problems.
         let tennant_id = (tennant_id as i64).to_string();
+
         self.db_connection.execute(
             "INSERT INTO tags
             (name, body, tennant_id) VALUES (?1, ?2, ?3)",
@@ -132,6 +148,7 @@ impl TagRepository for SqliteTagRepository {
     fn read_tag(&self, tag_name: &str, tennant_id: u64) -> Result<String, Box<std::error::Error>> {
         //sqlite3 doesn't support u64 properly so we have to cast to i64 first. as long as we do this consistantly we shouldn't have problems.
         let tennant_id = (tennant_id as i64).to_string();
+
         Ok(self
             .db_connection
             .prepare(
@@ -140,6 +157,27 @@ impl TagRepository for SqliteTagRepository {
                 WHERE tennant_id = (?1) AND name = (?2)",
             )?
             .query_row(&[&tennant_id, tag_name], |row| Ok(row.get(0)?))?)
+    }
+
+    fn read_all_tags(&self, tennant_id: u64) -> Result<Vec<Tag>, Box<std::error::Error>> {
+        //sqlite3 doesn't support u64 properly so we have to cast to i64 first. as long as we do this consistantly we shouldn't have problems.
+        let tennant_id = (tennant_id as i64).to_string();
+
+        Ok(self
+            .db_connection
+            .prepare(
+                "SELECT name, body
+                FROM tags
+                WHERE tennant_id = (?1)",
+            )?
+            .query_map(&[&tennant_id], |row| {
+                Ok(Tag {
+                    name: row.get(0)?,
+                    body: row.get(1)?,
+                })
+            })?
+            .filter_map(Result::ok)
+            .collect())
     }
 }
 

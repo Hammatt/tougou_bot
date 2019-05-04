@@ -25,6 +25,9 @@ fn main() {
         .register_command("ntag", tag_command.clone())
         .unwrap();
     client.register_command("tag", tag_command.clone()).unwrap();
+    client
+        .register_command("atags", tag_command.clone())
+        .unwrap();
 
     let keep_alive = Condvar::new();
     let keep_alive_lock = Mutex::new(());
