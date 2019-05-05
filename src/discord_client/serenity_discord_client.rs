@@ -1,4 +1,5 @@
 use crate::discord_client::{CommandHandler, DiscordClient};
+use log;
 use serenity::{
     client,
     model::{channel::Message, gateway::Ready},
@@ -21,7 +22,7 @@ struct SerenityDiscordHandler {
 
 impl DiscordClient for SerenityDiscordClient {
     fn new(token: &str) -> Self {
-        println!("valid token: {}", client::validate_token(token).is_ok());
+        log::info!("valid token: {}", client::validate_token(token).is_ok());
 
         let command_callbacks = Arc::new(Mutex::new(HashMap::new()));
         let serenity_handler = SerenityDiscordHandler {
@@ -32,15 +33,15 @@ impl DiscordClient for SerenityDiscordClient {
         let serenity_client = Arc::new(Mutex::new(
             Client::new(token, serenity_handler).expect("Error creating serenity client"),
         ));
-        println!("created client");
+        log::info!("created client");
 
         let thread_serenity_client = serenity_client.clone();
         thread::spawn(move || {
             if let Err(why) = thread_serenity_client.lock().unwrap().start() {
-                println!("An error occurred while running the client: {:?}", why);
+                log::error!("An error occurred while running the client: {:?}", why);
             }
         });
-        println!("started connection");
+        log::info!("started connection");
 
         SerenityDiscordClient {
             command_callbacks: command_callbacks.clone(),
@@ -97,18 +98,18 @@ impl EventHandler for SerenityDiscordHandler {
                     msg.guild_id.unwrap().0,
                     &|output| {
                         if let Err(err) = msg.channel_id.say(&ctx.http, output) {
-                            println!("Error sending message: {:?}", err);
+                            log::error!("Error sending message: {:?}", err);
                         }
                     },
                 ) {
-                    println!("Error processing command: {:?}", err);
+                    log::error!("Error processing command: {:?}", err);
                 }
             };
         };
     }
 
     fn ready(&self, _: Context, ready: Ready) {
-        println!("{} is connected!", ready.user.name);
+        log::info!("{} is connected!", ready.user.name);
     }
 }
 

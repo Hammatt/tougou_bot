@@ -1,3 +1,4 @@
+use log::info;
 use std::env;
 use std::sync::{Arc, Condvar, Mutex};
 use tougou_bot::commands::{
@@ -7,6 +8,9 @@ use tougou_bot::data_access::*;
 use tougou_bot::discord_client::*;
 
 fn main() {
+    env_logger::init();
+    info!("starting init...");
+
     let token: String =
         env::var("DISCORD_TOKEN").expect("Must set the environment variable `DISCORD_TOKEN`");
 
@@ -38,9 +42,13 @@ fn main() {
         .register_command("atags", tag_command.clone())
         .unwrap();
 
+    log::info!("init finished. starting keep alive lock.");
+
     let keep_alive = Condvar::new();
     let keep_alive_lock = Mutex::new(());
     let _ = keep_alive
         .wait(keep_alive_lock.lock().unwrap())
         .expect("keep alive lock failed");
+
+    log::info!("exit requested. exiting.")
 }
