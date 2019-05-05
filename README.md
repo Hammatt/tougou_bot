@@ -1,61 +1,45 @@
-# TougouBot
+# Tougou Bot
 
-A basic bot written in elixir.  
-Using the [poison](https://github.com/devinus/poison), [httpoison](https://github.com/edgurgel/httpoison), [alchemy](https://github.com/cronokirby/alchemy), and [floki](https://github.com/philss/floki) libraries.
+An (in progress) bot for discord. The old version of this had all the features that are still marked as todo so use an old release if you want those still.
 
-## Features
+## TODO:
+ - commands to interface with the jihso.org website
+ - commands to interface with the vndb.org website
+ - commands to interface with some anime database (mal api still down?)
+ - commands to interface with wikipedia (was this feature used?)
+ - unit/feature tests (need to stub out external APIs somehow)
+ - bubble more error messages back to the user (at the moment some are swallowed and logged so the end user doesn't know something has happened)
 
-### Debug Module:
+## How to build it: 
+[Make sure rustc & cargo are installed](https://www.rust-lang.org/learn/get-started)  
+`cargo build [--release]`
 
-Contains useful debug commands like `!ping` and `!status`. Also contains the `!roll` command which you can use to generate random numbers, see !help for more info.
+## How to test it:
+Linting: `cargo fmt && cargo clippy`  
+Unit: `cargo test`  
+More detailed automated tests still to come.
 
-### Jisho Module:
+## How to run it:
+Make sure the environment variable `DISCORD_TOKEN` is set to your discord application's bot token.  
+Compile using `cargo build --release` and then run the output executable.
 
-Accessable via the `!jisho` command, this module leverage the api provided by http://jisho.org 
-to quickly get definitions and readings of Japanese words.  
-e.g.: ![example usage](https://i.imgur.com/3yEoNuU.png)
+The environment variable `RUST_LOG` can be set to log levels of `trace`, `debug`, `info`, `warn`, or `error`. I reccomend using at least `info`.
 
-### Tag Module:
+## Commands:  
+### !ping:  
+Tougou replies saying "Pong!"
 
-Accessable via the `!tag` family of commands (check !help for more syntax info). Allows you to give the bot a piece of text-based information to recall.  
-e.g.: ![example usage](https://i.imgur.com/mVAyqfq.png)
+### !pic: 
+(warning: likely to be NSFW)  
+This command fetches a random image from the danbooru site.   
+Usage: `!pic [tag(s)]`. Tags are optional and space separated. Note: The Danbooru API caps the number of tags that can constrain a query to 2.
 
-### VNDB Module:
-
-Warning: Lkely to be NSFW. Accessable via the `!vndb` family of commands (check !help for more info) Leverages https://vndb.org to search for Visual Novels and provides a link back.  
-e.g.: ![example usage](https://i.imgur.com/xoCoUHS.png)
-
-### Wiki Module:
-
-Accessable via the `!wiki` command. Leverages the API provided by https://en.wikipedia.org/wiki/Main_Page to serach for articles on wikipedia.  
-e.g.: ![example usage](https://i.imgur.com/lD0BRZO.png)
-
-### Anime Module:
-
-Accessable via the `!anime` and `!manga` commands. Leverages the API provided by https://myanimelist.net to search for anime or manga and provides links to their articles.  
-e.g.: ![example usage](https://i.imgur.com/RMTswbK.png)
-
-### Danbooru Module:
-
-Warning: Likely to be NSFW. Accessable via the `!pic` command (check !help for more info). Leverages the [Danbooru API](https://danbooru.donmai.us/wiki_pages/43568) (Site may be NSFW) to provide a random picture based on given serach tags.  
-e.g.: ![example usage](https://i.imgur.com/6u4rCae.png)
-
-
-## Running
-
-Before you run you need to make sure that you have a file in the root director of the project called "token" which contains your private discord application bot token.  
-You also will require a file called "mal" with the credentials for a [myanimelist.net](myanimelist.net) 
-account if you want to use the anime and manga commands.
-
-Make sure you have the dependancies with 
-```bash
-mix deps.get
+### !tag:  
+This command allows you to set tougou to memorise and recall phrases.  
+Example:  
 ```
-then run the bot
-```bash
-## To start in production
-./kidou.sh
-
-## To start in debug/interactive mode
-iex -S mix
+you: !ntag tag_name some tag body
+tougou: Created new tag tag_name with body some tag body
+you: !tag tag_name
+tougou: some tag body
 ```
