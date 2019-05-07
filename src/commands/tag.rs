@@ -49,17 +49,33 @@ impl CommandHandler for TagCommand {
         if command.starts_with("!ntag") {
             match parse_ntag(command) {
                 Some(new_tag) => {
-                    self.tag_repository
-                        .create_tag(&new_tag.name, &new_tag.body, tennant_id)?;
-                    send_message_callback(&format!(
-                        "Created new tag {} with body {}",
-                        &new_tag.name, &new_tag.body
-                    ));
+                    match self
+                        .tag_repository
+                        .create_tag(&new_tag.name, &new_tag.body, tennant_id)
+                    {
+                        Ok(()) => {
+                            send_message_callback(&format!(
+                                "Created new tag {} with body {}",
+                                &new_tag.name, &new_tag.body
+                            ));
+                        }
+                        Err(error) => {
+                            send_message_callback("Could not create tag.");
+                            return Err(error);
+                        }
+                    }
                 }
                 None => send_message_callback("Syntax error, could not create tag"),
             }
         } else if command.starts_with("!atags") {
-            let tags: Vec<Tag> = self.tag_repository.read_all_tags(tennant_id)?;
+            let tags: Vec<Tag> = match self.tag_repository.read_all_tags(tennant_id) {
+                Ok(tags) => tags,
+                Err(error) => {
+                    send_message_callback("Could not get any tags.");
+                    return Err(error);
+                }
+            };
+
             if tags.is_empty() {
                 send_message_callback("no tags created");
             } else {
@@ -76,11 +92,15 @@ impl CommandHandler for TagCommand {
             }
         } else {
             match parse_tag_command(command) {
-                Some(tag_name) => {
-                    let body = self.tag_repository.read_tag(tag_name, tennant_id)?;
-
-                    send_message_callback(&body);
-                }
+                Some(tag_name) => match self.tag_repository.read_tag(tag_name, tennant_id) {
+                    Ok(body) => {
+                        send_message_callback(&body);
+                    }
+                    Err(error) => {
+                        send_message_callback("Could not find tag.");
+                        return Err(error);
+                    }
+                },
                 None => send_message_callback("Syntax error, could not find tag"),
             }
         }
