@@ -1,9 +1,10 @@
 use crate::data_access::tag_repository::TagRepository;
 use crate::discord_client::CommandHandler;
 use crate::models::tag::Tag;
+use std::sync::Mutex;
 
 pub struct TagCommand {
-    tag_repository: Box<TagRepository + Send>,
+    tag_repository: Mutex<Box<TagRepository + Send>>,
 }
 
 fn parse_ntag(command: &str) -> Option<Tag> {
@@ -35,7 +36,9 @@ impl TagCommand {
     pub fn new(
         tag_repository: Box<TagRepository + Send>,
     ) -> Result<TagCommand, Box<std::error::Error>> {
-        Ok(TagCommand { tag_repository })
+        Ok(TagCommand {
+            tag_repository: Mutex::new(tag_repository),
+        })
     }
 }
 
@@ -49,10 +52,11 @@ impl CommandHandler for TagCommand {
         if command.starts_with("!ntag") {
             match parse_ntag(command) {
                 Some(new_tag) => {
-                    match self
-                        .tag_repository
-                        .create_tag(&new_tag.name, &new_tag.body, tennant_id)
-                    {
+                    match self.tag_repository.lock().unwrap().create_tag(
+                        &new_tag.name,
+                        &new_tag.body,
+                        tennant_id,
+                    ) {
                         Ok(()) => {
                             send_message_callback(&format!(
                                 "Created new tag {} with body {}",
@@ -68,7 +72,12 @@ impl CommandHandler for TagCommand {
                 None => send_message_callback("Syntax error, could not create tag"),
             }
         } else if command.starts_with("!atags") {
-            let tags: Vec<Tag> = match self.tag_repository.read_all_tags(tennant_id) {
+            let tags: Vec<Tag> = match self
+                .tag_repository
+                .lock()
+                .unwrap()
+                .read_all_tags(tennant_id)
+            {
                 Ok(tags) => tags,
                 Err(error) => {
                     send_message_callback("Could not get any tags.");
@@ -92,7 +101,12 @@ impl CommandHandler for TagCommand {
             }
         } else {
             match parse_tag_command(command) {
-                Some(tag_name) => match self.tag_repository.read_tag(tag_name, tennant_id) {
+                Some(tag_name) => match self
+                    .tag_repository
+                    .lock()
+                    .unwrap()
+                    .read_tag(tag_name, tennant_id)
+                {
                     Ok(body) => {
                         send_message_callback(&body);
                     }
