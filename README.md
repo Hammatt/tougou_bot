@@ -8,7 +8,7 @@ An (in progress) bot for discord. The old version of this had all the features t
  - commands to interface with some anime database (mal api still down?)
  - commands to interface with wikipedia (was this feature used?)
  - unit/feature tests (need to stub out external APIs somehow)
- - bubble more error messages back to the user (at the moment some are swallowed and logged so the end user doesn't know something has happened)
+ - build packages for releases (.deb, .rpm?)
 
 ## How to build it: 
 [Make sure rustc & cargo are installed](https://www.rust-lang.org/learn/get-started)  
@@ -39,7 +39,7 @@ This command allows you to set tougou to memorise and recall phrases.
 Example:  
 ```
 you: !ntag tag_name some tag body
-tougou: Created new tag tag_name with body some tag body
+tougou: 新しいタッグ「tag_name」➡「some tag body」を作った。
 you: !tag tag_name
 tougou: some tag body
 ```

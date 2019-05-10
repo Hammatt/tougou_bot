@@ -1,9 +1,10 @@
 use crate::data_access::tag_repository::TagRepository;
 use crate::discord_client::CommandHandler;
 use crate::models::tag::Tag;
+use std::sync::Mutex;
 
 pub struct TagCommand {
-    tag_repository: Box<TagRepository + Send>,
+    tag_repository: Mutex<Box<TagRepository + Send>>,
 }
 
 fn parse_ntag(command: &str) -> Option<Tag> {
@@ -35,7 +36,9 @@ impl TagCommand {
     pub fn new(
         tag_repository: Box<TagRepository + Send>,
     ) -> Result<TagCommand, Box<std::error::Error>> {
-        Ok(TagCommand { tag_repository })
+        Ok(TagCommand {
+            tag_repository: Mutex::new(tag_repository),
+        })
     }
 }
 
@@ -49,19 +52,43 @@ impl CommandHandler for TagCommand {
         if command.starts_with("!ntag") {
             match parse_ntag(command) {
                 Some(new_tag) => {
-                    self.tag_repository
-                        .create_tag(&new_tag.name, &new_tag.body, tennant_id)?;
-                    send_message_callback(&format!(
-                        "Created new tag {} with body {}",
-                        &new_tag.name, &new_tag.body
-                    ));
+                    match self.tag_repository.lock().unwrap().create_tag(
+                        &new_tag.name,
+                        &new_tag.body,
+                        tennant_id,
+                    ) {
+                        Ok(()) => {
+                            send_message_callback(&format!(
+                                "新しいタッグ「{}」➡「{}」を作った。",
+                                &new_tag.name, &new_tag.body
+                            ));
+                        }
+                        Err(error) => {
+                            send_message_callback(
+                                "エラーが発生しました。そのタッグもう知っている。",
+                            );
+                            return Err(error);
+                        }
+                    }
                 }
-                None => send_message_callback("Syntax error, could not create tag"),
+                None => send_message_callback("シンタックスエラーが発生しました"),
             }
         } else if command.starts_with("!atags") {
-            let tags: Vec<Tag> = self.tag_repository.read_all_tags(tennant_id)?;
+            let tags: Vec<Tag> = match self
+                .tag_repository
+                .lock()
+                .unwrap()
+                .read_all_tags(tennant_id)
+            {
+                Ok(tags) => tags,
+                Err(error) => {
+                    send_message_callback("タッグが見つかりません。");
+                    return Err(error);
+                }
+            };
+
             if tags.is_empty() {
-                send_message_callback("no tags created");
+                send_message_callback("タッグがまだいない。");
             } else {
                 let mut message = String::new();
 
@@ -76,12 +103,21 @@ impl CommandHandler for TagCommand {
             }
         } else {
             match parse_tag_command(command) {
-                Some(tag_name) => {
-                    let body = self.tag_repository.read_tag(tag_name, tennant_id)?;
-
-                    send_message_callback(&body);
-                }
-                None => send_message_callback("Syntax error, could not find tag"),
+                Some(tag_name) => match self
+                    .tag_repository
+                    .lock()
+                    .unwrap()
+                    .read_tag(tag_name, tennant_id)
+                {
+                    Ok(body) => {
+                        send_message_callback(&body);
+                    }
+                    Err(error) => {
+                        send_message_callback("そのタッグがいない");
+                        return Err(error);
+                    }
+                },
+                None => send_message_callback("シンタックスエラーが発生しました"),
             }
         }
 

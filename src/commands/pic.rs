@@ -20,10 +20,16 @@ impl CommandHandler for PicCommand {
     ) -> Result<(), Box<std::error::Error>> {
         let parameters = get_search_parameters(command);
 
-        let result = self.pic_repository.get_random_picture(&parameters)?;
-        send_message_callback(&result.uri);
-
-        Ok(())
+        match self.pic_repository.get_random_picture(&parameters) {
+            Ok(result) => {
+                send_message_callback(&result.uri);
+                Ok(())
+            }
+            Err(error) => {
+                send_message_callback("画像を取得ができませんでした");
+                Err(error)
+            }
+        }
     }
 }
 
