@@ -39,7 +39,7 @@ This command allows you to set tougou to memorise and recall phrases.
 Example:  
 ```
 you: !ntag tag_name some tag body
-tougou: Created new tag tag_name with body some tag body
+tougou: 新しいタッグ「tag_name」➡「some tag body」を作った。
 you: !tag tag_name
 tougou: some tag body
 ```

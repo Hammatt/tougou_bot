@@ -26,9 +26,7 @@ impl CommandHandler for PicCommand {
                 Ok(())
             }
             Err(error) => {
-                send_message_callback(
-                    "Failed to get image. Check you have at most two query parameters.",
-                );
+                send_message_callback("画像を取得ができませんでした");
                 Err(error)
             }
         }

@@ -59,17 +59,19 @@ impl CommandHandler for TagCommand {
                     ) {
                         Ok(()) => {
                             send_message_callback(&format!(
-                                "Created new tag {} with body {}",
+                                "新しいタッグ「{}」➡「{}」を作った。",
                                 &new_tag.name, &new_tag.body
                             ));
                         }
                         Err(error) => {
-                            send_message_callback("Could not create tag.");
+                            send_message_callback(
+                                "エラーが発生しました。そのタッグもう知っている。",
+                            );
                             return Err(error);
                         }
                     }
                 }
-                None => send_message_callback("Syntax error, could not create tag"),
+                None => send_message_callback("シンタックスエラーが発生しました"),
             }
         } else if command.starts_with("!atags") {
             let tags: Vec<Tag> = match self
@@ -80,13 +82,13 @@ impl CommandHandler for TagCommand {
             {
                 Ok(tags) => tags,
                 Err(error) => {
-                    send_message_callback("Could not get any tags.");
+                    send_message_callback("タッグが見つかりません。");
                     return Err(error);
                 }
             };
 
             if tags.is_empty() {
-                send_message_callback("no tags created");
+                send_message_callback("タッグがまだいない。");
             } else {
                 let mut message = String::new();
 
@@ -111,11 +113,11 @@ impl CommandHandler for TagCommand {
                         send_message_callback(&body);
                     }
                     Err(error) => {
-                        send_message_callback("Could not find tag.");
+                        send_message_callback("そのタッグがいない");
                         return Err(error);
                     }
                 },
-                None => send_message_callback("Syntax error, could not find tag"),
+                None => send_message_callback("シンタックスエラーが発生しました"),
             }
         }
 
