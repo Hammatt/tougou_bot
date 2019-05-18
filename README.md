@@ -3,7 +3,6 @@
 An (in progress) bot for discord. The old version of this had all the features that are still marked as todo so use an old release if you want those still.
 
 ## TODO:
- - commands to interface with the jihso.org website
  - commands to interface with the vndb.org website
  - commands to interface with some anime database (mal api still down?)
  - commands to interface with wikipedia (was this feature used?)
@@ -42,4 +41,15 @@ you: !ntag tag_name some tag body
 tougou: 新しいタッグ「tag_name」➡「some tag body」を作った。
 you: !tag tag_name
 tougou: some tag body
+```
+
+### !jisho:
+This command allows you to check for the definition and/or reading of a japanese word. This command uses the jisho.org api.  
+Example:  
+```
+you: !jisho wipe
+tougou: 言葉：拭く
+        読み方：ふく
+        言葉の意味：to wipe; to dry
+        続き：https://jisho.org/search/wipe
 ```

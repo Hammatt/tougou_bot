@@ -26,7 +26,7 @@ impl CommandHandler for PicCommand {
                 Ok(())
             }
             Err(error) => {
-                send_message_callback("画像を取得ができませんでした");
+                send_message_callback("画像を取得できない");
                 Err(error)
             }
         }
