@@ -60,31 +60,29 @@ impl JishoRepository for JishoOrgRepository {
             .first()
             .ok_or_else(|| JishoOrgRepositoryError::new(String::from("Got no item in response from jisho api")))?;
 
-        Ok(JishoDefinition {
-            word: first_response_model_data
+        let japanese_section = first_response_model_data
                 .japanese
                 .first()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("japanese section was empty")))?
+                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("japanese section was empty")))?;
+
+        let senses_section = first_response_model_data
+                .senses
+                .first()
+                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("senses section was empty")))?;
+
+        Ok(JishoDefinition {
+            word: japanese_section
                 .word
                 .clone()
                 .ok_or_else(|| JishoOrgRepositoryError::new(String::from("word was empty")))?
                 .clone(),
-            reading: first_response_model_data
-                .japanese
-                .first()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("japanese section was empty")))?
+            reading: japanese_section
                 .reading
                 .clone(),
-            english_definitions: first_response_model_data
-                .senses
-                .first()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("senses section was empty")))?
+            english_definitions: senses_section
                 .english_definitions
                 .clone(),
-            parts_of_speech: first_response_model_data
-                .senses
-                .first()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("senses section was empty")))?
+            parts_of_speech: senses_section
                 .parts_of_speech
                 .clone(),
         })
