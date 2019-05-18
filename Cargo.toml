@@ -1,6 +1,6 @@
 [package]
 name = "tougou_bot"
-version = "2.1.0-dev"
+version = "2.1.0"
 authors = ["Alexander Hammatt <alexander.hammatt@protonmail.com>"]
 edition = "2018"
 
