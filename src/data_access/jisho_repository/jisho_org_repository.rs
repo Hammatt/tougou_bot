@@ -55,20 +55,17 @@ impl JishoRepository for JishoOrgRepository {
 
         let response_models: JishoOrgApiResponse = serde_json::from_str(&response_body)?;
 
-        let first_response_model_data = response_models
-            .data
-            .first()
-            .ok_or_else(|| JishoOrgRepositoryError::new(String::from("Got no item in response from jisho api")))?;
+        let first_response_model_data = response_models.data.first().ok_or_else(|| {
+            JishoOrgRepositoryError::new(String::from("Got no item in response from jisho api"))
+        })?;
 
-        let japanese_section = first_response_model_data
-                .japanese
-                .first()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("japanese section was empty")))?;
+        let japanese_section = first_response_model_data.japanese.first().ok_or_else(|| {
+            JishoOrgRepositoryError::new(String::from("japanese section was empty"))
+        })?;
 
-        let senses_section = first_response_model_data
-                .senses
-                .first()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("senses section was empty")))?;
+        let senses_section = first_response_model_data.senses.first().ok_or_else(|| {
+            JishoOrgRepositoryError::new(String::from("senses section was empty"))
+        })?;
 
         Ok(JishoDefinition {
             word: japanese_section
@@ -76,15 +73,9 @@ impl JishoRepository for JishoOrgRepository {
                 .clone()
                 .ok_or_else(|| JishoOrgRepositoryError::new(String::from("word was empty")))?
                 .clone(),
-            reading: japanese_section
-                .reading
-                .clone(),
-            english_definitions: senses_section
-                .english_definitions
-                .clone(),
-            parts_of_speech: senses_section
-                .parts_of_speech
-                .clone(),
+            reading: japanese_section.reading.clone(),
+            english_definitions: senses_section.english_definitions.clone(),
+            parts_of_speech: senses_section.parts_of_speech.clone(),
             link_for_more: format!("https://jisho.org/search/{}", parameters),
         })
     }
