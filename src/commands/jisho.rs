@@ -27,10 +27,11 @@ impl CommandHandler for JishoCommand {
         match self.jisho_repository.get_definition(query) {
             Ok(definition) => {
                 send_message_callback(&format!(
-                    "言葉：{}\n読み方：{}\n言葉の意味：{}",
+                    "言葉：{}\n読み方：{}\n言葉の意味：{}\n続き：<{}>",
                     definition.word,
                     definition.reading,
-                    definition.english_definitions.first().unwrap()
+                    definition.english_definitions.join("; "),
+                    definition.link_for_more,
                 ));
                 Ok(())
             }

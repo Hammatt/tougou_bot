@@ -40,7 +40,7 @@ impl JishoOrgRepository {
 }
 
 fn format_search_parameters(parameters: Vec<&str>) -> String {
-    parameters.join("+")
+    parameters.join("%20")
 }
 
 impl JishoRepository for JishoOrgRepository {
@@ -85,6 +85,7 @@ impl JishoRepository for JishoOrgRepository {
             parts_of_speech: senses_section
                 .parts_of_speech
                 .clone(),
+            link_for_more: format!("https://jisho.org/search/{}", parameters),
         })
     }
 }
