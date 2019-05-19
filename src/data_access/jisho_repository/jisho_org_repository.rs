@@ -68,11 +68,11 @@ impl JishoRepository for JishoOrgRepository {
         })?;
 
         Ok(JishoDefinition {
-            word: japanese_section
-                .word
-                .clone()
-                .ok_or_else(|| JishoOrgRepositoryError::new(String::from("word was empty")))?
-                .clone(),
+            word: match japanese_section
+                .word.clone() {
+                    Some(word) => word,
+                    None => japanese_section.reading.clone(),
+                },
             reading: japanese_section.reading.clone(),
             english_definitions: senses_section.english_definitions.clone(),
             parts_of_speech: senses_section.parts_of_speech.clone(),
