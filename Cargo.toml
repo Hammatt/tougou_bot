@@ -12,4 +12,8 @@ rusqlite = "0.18"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
-serenity = "0.6.0-rc.1"
+
+[dependencies.serenity]
+default-features = false
+features = ["client", "http", "model", "native_tls_backend"]
+version = "0.6.0"
