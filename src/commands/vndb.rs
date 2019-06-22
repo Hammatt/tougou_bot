@@ -30,19 +30,22 @@ impl CommandHandler for VNDBCommand {
                 match result {
                     VNDBResult::Single(uri) => {
                         send_message_callback(&uri);
-                    },
+                    }
                     VNDBResult::MostLikelyAndMore(suggested_uri, more_results) => {
-                        send_message_callback(&format!("{}\n続き：<{}>", suggested_uri, more_results));
-                    },
+                        send_message_callback(&format!(
+                            "{}\n続き：<{}>",
+                            suggested_uri, more_results
+                        ));
+                    }
                     VNDBResult::None => {
-                        send_message_callback("エラーが発生しました");//TODO: improve error message
-                    },
+                        send_message_callback("エラーが発生しました"); //TODO: improve error message
+                    }
                 }
 
                 Ok(())
-            },
+            }
             Err(error) => {
-                send_message_callback("エラーが発生しました");//TODO: improve error message
+                send_message_callback("エラーが発生しました"); //TODO: improve error message
                 Err(error)
             }
         }

@@ -14,52 +14,45 @@ struct VNDBOrgRepositoryError {
 }
 
 fn find_top_table_result(node: &Handle) -> Option<String> {
-    match node.data {
-        NodeData::Element {
-            ref name,
-            ref attrs,
-            ..
-        } => {
-            if &name.local == "table" {
-                for attribute in attrs.borrow().iter() {
-                    if (&attribute.name.local == "class") && (attribute.value == html5ever::tendril::Tendril::from("stripe")) {
-                        let tbody_index = 1;
-                        let node_children = node.children.borrow();
-                        let tbody = node_children.get(tbody_index)?;
-                        let tbody_children = tbody.children.borrow();
-                        let first_row = &tbody_children.first()?;
-                        let first_row_children = first_row.children.borrow();
-                        let first_column = first_row_children.first()?;
-                        let first_column_children = first_column.children.borrow();
-                        let link_to_vn_element = first_column_children.first()?;
+    if let NodeData::Element {
+        ref name,
+        ref attrs,
+        ..
+    } = node.data
+    {
+        if &name.local == "table" {
+            for attribute in attrs.borrow().iter() {
+                if (&attribute.name.local == "class")
+                    && (attribute.value == html5ever::tendril::Tendril::from("stripe"))
+                {
+                    let tbody_index = 1;
+                    let node_children = node.children.borrow();
+                    let tbody = node_children.get(tbody_index)?;
+                    let tbody_children = tbody.children.borrow();
+                    let first_row = &tbody_children.first()?;
+                    let first_row_children = first_row.children.borrow();
+                    let first_column = first_row_children.first()?;
+                    let first_column_children = first_column.children.borrow();
+                    let link_to_vn_element = first_column_children.first()?;
 
-                        match link_to_vn_element.data {
-                            NodeData::Element {
-                                ref attrs,
-                                ..
-                            } => {
-                                for link_attribute in attrs.borrow().iter() {
-                                    if &link_attribute.name.local == "href" {
-                                        return Some(format!("{}", attribute.value));
-                                    }
-                                }
-                            },
-                            _ => {}
+                    if let NodeData::Element { ref attrs, .. } = link_to_vn_element.data {
+                        for link_attribute in attrs.borrow().iter() {
+                            if &link_attribute.name.local == "href" {
+                                return Some(format!("{}", link_attribute.value));
+                            }
                         }
-                    }
+                    };
                 }
             }
-
-            let mut result = None;
-            for child in node.children.borrow().iter() {
-                if let Some(value) = find_top_table_result(child) {
-                    result = Some(value)
-                };
-            }
-            result
         }
-        _ => None,
     }
+
+    for child in node.children.borrow().iter() {
+        if let Some(value) = find_top_table_result(child) {
+            return Some(value);
+        };
+    }
+    None
 }
 
 fn format_search_parameters(parameters: Vec<&str>) -> String {
@@ -105,7 +98,7 @@ impl VNDBRepository for VNDBOrgRepository {
             .build()?
             .get(&request_uri)
             .send()?;
-        
+
         match response.status() {
             StatusCode::TEMPORARY_REDIRECT => {
                 let location_header = response
@@ -123,7 +116,10 @@ impl VNDBRepository for VNDBOrgRepository {
             StatusCode::OK => {
                 let recomended_link = get_recomended_link(&response.text()?)?;
 
-                result = VNDBResult::MostLikelyAndMore(format!("https://vndb.org{}", recomended_link), request_uri);
+                result = VNDBResult::MostLikelyAndMore(
+                    format!("https://vndb.org{}", recomended_link),
+                    request_uri,
+                );
             }
             _ => {
                 result = VNDBResult::None;
