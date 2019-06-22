@@ -91,7 +91,7 @@ impl VNDBRepository for VNDBOrgRepository {
         let mut result;
 
         let formated_params = format_search_parameters(query);
-        let request_uri = format!("https://vndb.org/v/all?sq={}", formated_params);
+        let request_uri = format!("https://vndb.org/v/all?sq={};o=d;s=rating", formated_params);
 
         let mut response: reqwest::Response = reqwest::Client::builder()
             .redirect(reqwest::RedirectPolicy::none())
