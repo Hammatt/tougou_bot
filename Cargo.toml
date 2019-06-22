@@ -1,15 +1,20 @@
 [package]
 name = "tougou_bot"
-version = "2.1.1"
+version = "2.2.0"
 authors = ["Alexander Hammatt <alexander.hammatt@protonmail.com>"]
 edition = "2018"
 
 [dependencies]
 env_logger = "0.6"
+html5ever = "0.23.0"
 log = "0.4"
 reqwest = "0.9"
 rusqlite = "0.18"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
-serenity = "0.6.0-rc.1"
+
+[dependencies.serenity]
+default-features = false
+features = ["client", "http", "model", "native_tls_backend"]
+version = "0.6.0"

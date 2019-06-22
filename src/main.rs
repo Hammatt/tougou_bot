@@ -2,7 +2,8 @@ use log::info;
 use std::env;
 use std::sync::{Arc, Condvar, Mutex};
 use tougou_bot::commands::{
-    jisho::JishoCommand, pic::PicCommand, ping::PingCommand, status::StatusCommand, tag::TagCommand,
+    jisho::JishoCommand, pic::PicCommand, ping::PingCommand, status::StatusCommand,
+    tag::TagCommand, vndb::VNDBCommand,
 };
 use tougou_bot::data_access::*;
 use tougou_bot::discord_client::*;
@@ -46,6 +47,11 @@ fn main() {
         Box::new(jisho_repository::jisho_org_repository::JishoOrgRepository::default());
     let jisho_command = Arc::new(Mutex::new(JishoCommand::new(jisho_org_repository)));
     client.register_command("jisho", jisho_command).unwrap();
+
+    let vndb_org_repository =
+        Box::new(vndb_repository::vndb_org_repository::VNDBOrgRepository::default());
+    let vndb_command = Arc::new(Mutex::new(VNDBCommand::new(vndb_org_repository)));
+    client.register_command("vndb", vndb_command).unwrap();
 
     log::info!("init finished. starting keep alive lock.");
 
