@@ -1601,7 +1601,7 @@ dependencies = [
 
 [[package]]
 name = "tougou_bot"
-version = "2.2.0-dev"
+version = "2.2.0"
 dependencies = [
  "env_logger 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "html5ever 0.23.0 (registry+https://github.com/rust-lang/crates.io-index)",
