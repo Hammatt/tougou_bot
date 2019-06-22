@@ -38,7 +38,7 @@ impl CommandHandler for VNDBCommand {
                         ));
                     }
                     VNDBResult::None => {
-                        send_message_callback("エラーが発生しました"); //TODO: improve error message
+                        send_message_callback("ゲームを取得できない");
                     }
                 }
 
