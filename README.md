@@ -53,3 +53,13 @@ tougou: 言葉：拭く
         言葉の意味：to wipe; to dry
         続き：https://jisho.org/search/wipe
 ```
+
+### !vndb:  
+Warning: Lkely to be NSFW.  
+This command allows you to search the vndb website for visual novels.
+Example:
+```
+you: !vndb lisp 
+tougou: https://vndb.org/v7754
+        続き：https://vndb.org/v/all?sq=lisp;o=d;s=rating
+```
